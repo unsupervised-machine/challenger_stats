@@ -3,9 +3,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 import os
 
-# # Database URL
-# DATABASE_URL = "sqlite:///./database.db"
-
 # Get the base directory of the project
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 

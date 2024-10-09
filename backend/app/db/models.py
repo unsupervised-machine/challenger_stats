@@ -2,8 +2,6 @@ from sqlalchemy import Column, Integer, String, Float
 # from sqlalchemy.ext.declarative import declarative_base
 from .database import Base
 
-# Base class for SQLAlchemy models
-# Base = declarative_base()
 
 class Account(Base):
     __tablename__ = "accounts"

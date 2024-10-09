@@ -13,11 +13,6 @@ load_dotenv()
 
 API_KEY = os.getenv("DEFAULT_RIOT_API_KEY")
 
-# Configure logging
-# logging.basicConfig(filename="league_data.log", level=logging.INFO, format="%(asctime)s - %(message)s")
-
-
-
 async def fetch_challenger_leagues(queue="RANKED_SOLO_5x5", region="na1", api_key=API_KEY):
     url = f"https://{region}.api.riotgames.com/lol/league/v4/challengerleagues/by-queue/{queue}?api_key={api_key}"
     async with httpx.AsyncClient() as client:
@@ -45,30 +40,16 @@ async def fetch_master_leagues(queue="RANKED_SOLO_5x5", region="na1", api_key=AP
 async def process_leagues():
     db = SessionLocal()
     init_db()
-    # available_tables = list_tables()
-    # print("Available tables in the database:", available_tables)
 
     master_data = await fetch_master_leagues()
     grandmaster_data = await fetch_grandmaster_leagues()
     challenger_data = await fetch_challenger_leagues()
-
-    # logging.info("After fetching master accounts from riot API:")
-    # logging.info(master_data)
 
     # Transform data
     master_accounts = transform_league_to_accounts(master_data)
     grandmaster_accounts = transform_league_to_accounts(grandmaster_data)
     challenger_accounts = transform_league_to_accounts(challenger_data)
 
-    # Save transformed data to the log file instead of the database
-    # logging.info(f"Master accounts: {master_accounts}")
-    # logging.info(f"Grandmaster accounts: {grandmaster_accounts}")
-    # logging.info(f"Challenger accounts: {challenger_accounts}")
-
-    # Save data to the database
-    # logging.info("Preparing to insert master accounts:")
-    # for account in master_accounts:
-    #     logging.info(account)
     create_accounts(db=db, accounts=master_accounts)
     create_accounts(db=db, accounts=grandmaster_accounts)
     create_accounts(db=db, accounts=challenger_accounts)
