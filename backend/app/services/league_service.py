@@ -4,8 +4,8 @@ import os
 from sqlalchemy.orm import Session
 import logging
 
-from backend.app.transformers.league_to_accounts import transform_league_to_accounts
-from backend.app.db.crud import create_accounts
+from backend.app.transformers.league_to_accounts import transform_league_to_accounts_current, transform_league_to_accounts_history
+from backend.app.db.crud import create_accounts_current, insert_accounts_history
 # from backend.app.db.database import get_db
 from backend.app.db.database import SessionLocal, init_db, list_tables
 
@@ -46,13 +46,23 @@ async def process_leagues():
     challenger_data = await fetch_challenger_leagues()
 
     # Transform data
-    master_accounts = transform_league_to_accounts(master_data)
-    grandmaster_accounts = transform_league_to_accounts(grandmaster_data)
-    challenger_accounts = transform_league_to_accounts(challenger_data)
+    master_accounts_current = transform_league_to_accounts_current(master_data)
+    grandmaster_accounts_current = transform_league_to_accounts_current(grandmaster_data)
+    challenger_accounts_current = transform_league_to_accounts_current(challenger_data)
 
-    create_accounts(db=db, accounts=master_accounts)
-    create_accounts(db=db, accounts=grandmaster_accounts)
-    create_accounts(db=db, accounts=challenger_accounts)
+    master_accounts_history = transform_league_to_accounts_history(master_data)
+    grandmaster_accounts_history= transform_league_to_accounts_history(grandmaster_data)
+    challenger_accounts_history = transform_league_to_accounts_history(challenger_data)
+
+    # Save only current run accounts to the current table
+    current_accounts = master_accounts_current + grandmaster_accounts_current + challenger_accounts_current  # Combine all accounts for the current run
+    create_accounts_current(db=db, accounts=current_accounts)
+    print(f"length of current accounts: {len(current_accounts)}")
+
+    # Insert records into historic table
+    historic_accounts = master_accounts_history + grandmaster_accounts_history + challenger_accounts_history
+    print(f"length of historic accounts: {len(historic_accounts)}")
+    insert_accounts_history(db=db, accounts=historic_accounts)
 
 
 async def test_fetches():
