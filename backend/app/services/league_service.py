@@ -14,7 +14,7 @@ load_dotenv()
 API_KEY = os.getenv("DEFAULT_RIOT_API_KEY")
 
 # Configure logging
-logging.basicConfig(filename="league_data.log", level=logging.INFO, format="%(asctime)s - %(message)s")
+# logging.basicConfig(filename="league_data.log", level=logging.INFO, format="%(asctime)s - %(message)s")
 
 
 
@@ -61,14 +61,14 @@ async def process_leagues():
     challenger_accounts = transform_league_to_accounts(challenger_data)
 
     # Save transformed data to the log file instead of the database
-    logging.info(f"Master accounts: {master_accounts}")
-    logging.info(f"Grandmaster accounts: {grandmaster_accounts}")
-    logging.info(f"Challenger accounts: {challenger_accounts}")
+    # logging.info(f"Master accounts: {master_accounts}")
+    # logging.info(f"Grandmaster accounts: {grandmaster_accounts}")
+    # logging.info(f"Challenger accounts: {challenger_accounts}")
 
     # Save data to the database
-    logging.info("Preparing to insert master accounts:")
-    for account in master_accounts:
-        logging.info(account)
+    # logging.info("Preparing to insert master accounts:")
+    # for account in master_accounts:
+    #     logging.info(account)
     create_accounts(db=db, accounts=master_accounts)
     create_accounts(db=db, accounts=grandmaster_accounts)
     create_accounts(db=db, accounts=challenger_accounts)
