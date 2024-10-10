@@ -1,17 +1,34 @@
-import httpx
-from dotenv import load_dotenv
+# league_service.py
+
+# ===============================
+# Import Section
+# ===============================
+
+# Standard library imports (built-in modules)
 import os
-from sqlalchemy.orm import Session
 import logging
 
+# Package imports (third-party libraries installed via pip)
+import httpx
+from dotenv import load_dotenv
+
+# Local imports (modules or scripts within your project)
 from backend.app.transformers.league_to_accounts import transform_league_to_accounts_current, transform_league_to_accounts_history
 from backend.app.db.crud import create_accounts_current, insert_accounts_history
-# from backend.app.db.database import get_db
-from backend.app.db.database import SessionLocal, init_db, list_tables
+from backend.app.db.database import SessionLocal, init_db
+
+
+# ===============================
+# Environment Variables Section
+# ===============================
 
 load_dotenv()
-
 API_KEY = os.getenv("DEFAULT_RIOT_API_KEY")
+
+
+# ===============================
+# Function Definitions Section
+# ===============================
 
 async def fetch_challenger_leagues(queue="RANKED_SOLO_5x5", region="na1", api_key=API_KEY):
     url = f"https://{region}.api.riotgames.com/lol/league/v4/challengerleagues/by-queue/{queue}?api_key={api_key}"
@@ -37,13 +54,54 @@ async def fetch_master_leagues(queue="RANKED_SOLO_5x5", region="na1", api_key=AP
         return response.json()
 
 
+async def fetch_apex_leagues(apex_rank, queue="RANKED_SOLO_5x5", region="na1", api_key=API_KEY):
+    """
+    Fetches data from one of the apex leagues (Challenger, Grandmaster, or Master)
+    based on the provided apex_rank parameter.
+
+    :param apex_rank: The rank to fetch data for. Should be one of 'challenger', 'grandmaster', or 'master'.
+    :param queue: The queue type (default is "RANKED_SOLO_5x5").
+    :param region: The region to fetch data from (default is "na1").
+    :param api_key: The API key to authenticate the request.
+    :return: The JSON response of the requested league data.
+    """
+    if apex_rank == "challenger":
+        return await fetch_challenger_leagues(queue=queue, region=region, api_key=api_key)
+    elif apex_rank == "grandmaster":
+        return await fetch_grandmaster_leagues(queue=queue, region=region, api_key=api_key)
+    elif apex_rank == "master":
+        return await fetch_master_leagues(queue=queue, region=region, api_key=api_key)
+    else:
+        raise ValueError(f"Invalid apex_rank '{apex_rank}'. Must be one of 'challenger', 'grandmaster', or 'master'.")
+
+
+
 async def process_leagues():
+    """
+    Fetch, transform, and save data from multiple league tiers (Master, Grandmaster, Challenger)
+    into both current and historical database tables.
+
+    This function:
+    1. Initializes the database session and fetches the latest data for Master, Grandmaster, and Challenger leagues asynchronously.
+    2. Transforms the fetched league data into two formats:
+        - A 'current' format containing the most recent accounts.
+        - A 'history' format for the historical records of accounts.
+    3. Combines the accounts data for all leagues and:
+        - Saves the current run accounts into the 'current' accounts table.
+        - Inserts the transformed historical data into the 'history' accounts table.
+    4. Outputs the length of the current and historic accounts processed.
+    :return:
+    """
     db = SessionLocal()
     init_db()
 
-    master_data = await fetch_master_leagues()
-    grandmaster_data = await fetch_grandmaster_leagues()
-    challenger_data = await fetch_challenger_leagues()
+    # master_data = await fetch_master_leagues()
+    # grandmaster_data = await fetch_grandmaster_leagues()
+    # challenger_data = await fetch_challenger_leagues()
+
+    master_data = await fetch_apex_leagues(apex_rank="master")
+    grandmaster_data = await fetch_apex_leagues(apex_rank="grandmaster")
+    challenger_data = await fetch_apex_leagues(apex_rank="challenger")
 
     # Transform data
     master_accounts_current = transform_league_to_accounts_current(master_data)
@@ -65,6 +123,10 @@ async def process_leagues():
     insert_accounts_history(db=db, accounts=historic_accounts)
 
 
+# ===============================
+# Script Tests
+# ===============================
+
 async def test_fetches():
     print("Fetching Challenger Leagues...")
     challenger_leagues = await fetch_challenger_leagues()
@@ -85,9 +147,10 @@ async def test_inserts():
     print("Check database for inserts")
 
 
+# ===============================
+# Main Function or Application Logic
+# ===============================
 
-# Run the test
-# python app/services/league_service.py
 if __name__ == "__main__":
     import asyncio
     # asyncio.run(test_fetches())
