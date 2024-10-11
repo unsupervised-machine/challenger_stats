@@ -1,3 +1,4 @@
 backend/.env
 frontend/.env
 .idea/
+/backend/app/services/account_service.log
