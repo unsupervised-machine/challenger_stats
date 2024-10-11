@@ -1,15 +1,15 @@
-from backend.app.models.models import Account, Match
-from typing import List
+from backend.app.db.db_connection import get_db
 
 
-class DatabaseActions:
-    def __init__(self, db):
-        self.db = db
+def insert_data(db_uri, db_name, collection_name, data):
+    db = get_db(db_uri, db_name)
+    collection = db[collection_name]
 
-    def insert_accounts(self, accounts: List[Account]):
-        # might need change the format of the data either before it gets here or in this section
-        self.db.accounts.insert_many(accounts)
+    if isinstance(data, list):
+        result = collection.insert_many(data)
+        return result.inserted_ids
+    else:
+        result = collection.insert_one(data)
+        return result.inserted_id
 
-    def insert_matches(self, matches: List[Match]):
-        # might need change the format of the data either before it gets here or in this section
-        self.db.matches.insert_many(matches)
+
