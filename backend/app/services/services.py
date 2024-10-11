@@ -4,6 +4,7 @@ from pydantic.v1 import ValidationError
 
 from backend.app.api.fetch_data import fetch_apex_leagues
 from backend.app.db.db_actions import insert_data
+from backend.app.db.db_queries import get_recent_players
 from backend.app.api.validation import League
 from backend.app.api.transform_data import add_timestamps
 
@@ -43,12 +44,11 @@ logging.basicConfig(
 # Fetch Data
 async def update_league_data():
     # Fetch Data
-    logging.info(f"Fetching data start: challenger league from NA")
-    data = await fetch_apex_leagues(apex_rank='challenger')
+    logging.info(f"Fetching data start: master league from NA")
+    data = await fetch_apex_leagues(apex_rank='master')
     logging.info(f"Fetching data end: success \n Data: {data}")
 
     # Transform Data
-    # Not Required...
     logging.info(f"Transforming data start: \n Transformations applied: add_timestamps")
     data = add_timestamps(data=data, field='added_at')
     logging.info(f"Transforming data end: success \n Data: {data}")
@@ -70,7 +70,23 @@ async def update_league_data():
     logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
 
 
+async def query_recent_players():
+    # Fetch Data
+    logging.info(f"Database query start: get_recent_players")
+    data = get_recent_players()
+    logging.info(f"Database query end: length is {len(data)} \n Data: {data}")
+
+    # Transform Data
+    # Since this is a query we only need to fetch the data...
+
+    # Validate Data
+    # Since this is a query we only need to fetch the data...
+
+    # Insert Data
+    # Since this is a query we only need to fetch the data...
+
 
 if __name__ == "__main__":
     import asyncio
-    asyncio.run(update_league_data())
+    # asyncio.run(update_league_data())
+    asyncio.run(query_recent_players())
