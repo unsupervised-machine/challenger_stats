@@ -36,3 +36,11 @@ class AccountCurrent(Base):
 
     def __repr__(self):
         return f"<AccountCurrent(summoner_id={self.summoner_id}, tier={self.tier}, league_points={self.league_points}, wins={self.wins}, losses={self.losses}, total_games={self.total_games}, winrate={self.winrate})>"
+
+
+class MatchData(Base):
+    __tablename__ = "MatchData"
+    id = Column(Integer, primary_key=True, index=True)
+    matchId = Column(String, index=True)
+    playerPuuids = Column(String)
+
