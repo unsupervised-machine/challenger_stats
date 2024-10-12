@@ -2,8 +2,8 @@ from datetime import datetime
 
 from pydantic.v1 import ValidationError
 
-from backend.app.api.fetch_data import fetch_apex_leagues
-from backend.app.db.db_actions import insert_data
+from backend.app.api.fetch_data import fetch_apex_leagues, fetch_account_ids
+from backend.app.db.db_actions import insert_data, clear_and_insert_data
 from backend.app.db.db_queries import get_recent_players
 from backend.app.api.validation import League
 from backend.app.api.transform_data import add_timestamps
@@ -86,7 +86,49 @@ async def query_recent_players():
     # Since this is a query we only need to fetch the data...
 
 
+async def update_player_ids_data():
+    # Fetch Data
+    logging.info(f"Fetching data start: \n get recent_player data from db query")
+    apex_league_data = get_recent_players()
+    logging.info(f"Fetching data end: success \n Data: {apex_league_data}")
+
+    # Transform Data
+    logging.info(f"Transforming data start: \n Transformations applied: fetch additional ids from api for each summonerId")
+    summoner_ids = [item['summonerId'] for item in apex_league_data]
+
+
+    player_ids = []
+    for summoner_id in summoner_ids:
+        account_data = await fetch_account_ids(summoner_id=summoner_id)  # Awaiting the async function
+        player_ids.append({
+            "summonerId": account_data["id"],
+            "accountId": account_data["accountId"],
+            "puuid": account_data["puuid"],
+            "profileIconId": account_data["profileIconId"],
+            "revisionDate": account_data["revisionDate"],
+            "summonerLevel": account_data["summonerLevel"],
+        })
+        await asyncio.sleep(1)
+
+    logging.info(f"Transforming data end: \n Data: {player_ids}")
+
+    # Validate Data
+    logging.info(f"Validating data start: \n need to implement validation...")
+    # need to implement this...
+    validation_check = True
+    logging.info(f"Validating data end: \n success")
+
+    # Insert Data
+    logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: player_ids")
+    if validation_check:
+        insert_id = clear_and_insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_ids', data=player_ids)
+        logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
+
+# async def test_player_id_insert():
+
+
 if __name__ == "__main__":
     import asyncio
     # asyncio.run(update_league_data())
-    asyncio.run(query_recent_players())
+    # asyncio.run(query_recent_players())
+    asyncio.run(update_player_ids_data())
