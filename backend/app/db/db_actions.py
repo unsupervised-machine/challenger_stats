@@ -29,7 +29,8 @@ def clear_and_insert_data(db_uri, db_name, collection_name, data):
         return result.inserted_id
 
 
-def get_data(db_uri, db_name, collection_name, filter=None, sort_field=None, limit=None, pipeline=None):
+# noinspection PyShadowingBuiltins
+def get_data(db_uri, db_name, collection_name, filter=None, sort_field=None, limit=None, projection=None, pipeline=None):
     db = get_db(db_uri, db_name)
     collection = db[collection_name]
 
@@ -38,7 +39,7 @@ def get_data(db_uri, db_name, collection_name, filter=None, sort_field=None, lim
         cursor = collection.aggregate(pipeline)
     else:
         # Apply the filter, sort, and limit if specified
-        cursor = collection.find(filter)
+        cursor = collection.find(filter, projection)
         if sort_field:
             cursor = cursor.sort(*sort_field)
         if limit:

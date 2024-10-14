@@ -10,7 +10,9 @@ MONGO_DB_NAME = os.getenv("MONGO_DB_NAME")
 
 def get_recent_players(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='league'):
     """
-    Retrieve recent player entries from the specified MongoDB collection for specific tiers.
+    Retrieve recent player entries from the 'league' MongoDB collection for specific tiers.
+
+    The expected flow is to update that table, then clear and update the player_ids table using this.
 
     This function queries the MongoDB collection for player data, filters for entries
     belonging to the tiers 'challenger', 'grandmaster', and 'master', and returns a
@@ -81,5 +83,16 @@ def get_recent_players(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_na
     ]
 
     results.sort(key=lambda x: x.get('leaguePoints', 0), reverse=True)
+
+    return results
+
+
+def get_player_puuids(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_ids'):
+    projection = {
+        "_id": 0,
+        "puuid": 1  # include summonerId in query return (exclude fields not set to 0)
+    }
+    data = get_data(db_uri, db_name, collection_name, projection=projection)
+    results = [item['puuid'] for item in data]
 
     return results
