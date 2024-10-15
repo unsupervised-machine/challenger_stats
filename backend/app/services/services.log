@@ -1,93 +1,47 @@
 2024-10-14 20:07:22 - INFO - Deleted 0 documents from the collection: sample.
-2024-10-14 21:42:15 - INFO - START SERVICE: update_processed_match_ids
-2024-10-14 21:42:15 - INFO - Fetching data start: 
+2024-10-14 21:50:39 - INFO - START SERVICE: update_match_detail
+2024-10-14 21:50:39 - INFO - Fetching data start: 
  Get match_id data from db query
-2024-10-14 21:42:15 - INFO - Fetching data end: success 
+2024-10-14 21:50:39 - INFO - Fetching data end: success 
  length: 29163
-2024-10-14 21:42:15 - INFO - Fetching data start: 
+2024-10-14 21:50:39 - INFO - Fetching data start: 
  Get processed_match_id data from db query
-2024-10-14 21:42:15 - INFO - Fetching data end: success 
- length: 10
-2024-10-14 21:42:15 - INFO - Transforming data start: 
+2024-10-14 21:50:39 - INFO - Fetching data end: success 
+ length: 30
+2024-10-14 21:50:39 - INFO - Transforming data start: 
  Filter to find matches that need to be processed
-2024-10-14 21:42:15 - INFO - Transforming data end: success 
- length: 29153
-2024-10-14 21:42:15 - INFO - Transforming data start: Truncate match_ids_to_process to 10 (to limit execution time)
-2024-10-14 21:42:15 - INFO - Transforming data end: success 
+2024-10-14 21:50:39 - INFO - Transforming data end: success 
+ length: 29133
+2024-10-14 21:50:39 - INFO - Transforming data start: Truncate match_ids_to_process to 10 (to limit execution time)
+2024-10-14 21:50:39 - INFO - Transforming data end: success 
  length: 10
-2024-10-14 21:42:15 - INFO - Fetching data start: 
+2024-10-14 21:50:39 - INFO - Fetching data start: 
  get match_details from api calls
-2024-10-14 21:42:16 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5121849000?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:42:19 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5127944109?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:42:23 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5120954319?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:42:26 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5129137221?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:42:30 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5121644513?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:42:34 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5123493544?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:42:37 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5125584074?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:42:41 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5127988711?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:42:45 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5129422423?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:42:48 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5124842454?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:42:51 - INFO - Fetching data end: success 
+2024-10-14 21:50:40 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5132921787?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
+2024-10-14 21:50:43 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5122182270?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
+2024-10-14 21:50:47 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5129314840?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
+2024-10-14 21:50:51 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5124426603?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
+2024-10-14 21:50:54 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5125950745?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
+2024-10-14 21:50:58 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5123972393?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
+2024-10-14 21:51:01 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5122735857?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
+2024-10-14 21:51:05 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5129752998?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
+2024-10-14 21:51:08 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5121480058?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
+2024-10-14 21:51:12 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5122653628?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
+2024-10-14 21:51:15 - INFO - Fetching data end: success 
  length: 10
-2024-10-14 21:42:51 - INFO - Transforming data start: marking processed matches true for database records
-2024-10-14 21:42:51 - INFO - Transforming data end: success , 
+2024-10-14 21:51:15 - INFO - Transforming data start: marking processed matches true for database records
+2024-10-14 21:51:15 - INFO - Transforming data end: success , 
  length: 10
-2024-10-14 21:42:51 - INFO - Validating data start: 
+2024-10-14 21:51:15 - INFO - Validating data start: 
  need to implement validation...
-2024-10-14 21:42:51 - INFO - Validating data end: 
+2024-10-14 21:51:15 - INFO - Validating data end: 
  success
-2024-10-14 21:42:51 - INFO - Inserting data start: 
+2024-10-14 21:51:15 - INFO - Inserting data start: 
  database: challenger_stats_db, collection: match_detail
-2024-10-14 21:42:51 - INFO - Inserting data end: success 
- insert_id: [ObjectId('670df2cbe17e169e17d442ef'), ObjectId('670df2cbe17e169e17d442f0'), ObjectId('670df2cbe17e169e17d442f1'), ObjectId('670df2cbe17e169e17d442f2'), ObjectId('670df2cbe17e169e17d442f3'), ObjectId('670df2cbe17e169e17d442f4'), ObjectId('670df2cbe17e169e17d442f5'), ObjectId('670df2cbe17e169e17d442f6'), ObjectId('670df2cbe17e169e17d442f7'), ObjectId('670df2cbe17e169e17d442f8')]
-2024-10-14 21:42:51 - INFO - Inserting data start: 
+2024-10-14 21:51:15 - INFO - Inserting data end: success 
+ insert_id_list length: 10
+2024-10-14 21:51:15 - INFO - Inserting data start: 
  database: challenger_stats_db, collection: processed_match_id
-2024-10-14 21:42:51 - INFO - Inserting data end: success 
- insert_id: [ObjectId('670df2cbe17e169e17d442fa'), ObjectId('670df2cbe17e169e17d442fb'), ObjectId('670df2cbe17e169e17d442fc'), ObjectId('670df2cbe17e169e17d442fd'), ObjectId('670df2cbe17e169e17d442fe'), ObjectId('670df2cbe17e169e17d442ff'), ObjectId('670df2cbe17e169e17d44300'), ObjectId('670df2cbe17e169e17d44301'), ObjectId('670df2cbe17e169e17d44302'), ObjectId('670df2cbe17e169e17d44303')]
-2024-10-14 21:42:51 - INFO - END SERVICE: update_processed_match_ids
-2024-10-14 21:48:10 - INFO - START SERVICE: update_match_detail
-2024-10-14 21:48:10 - INFO - Fetching data start: 
- Get match_id data from db query
-2024-10-14 21:48:10 - INFO - Fetching data end: success 
- length: 29163
-2024-10-14 21:48:10 - INFO - Fetching data start: 
- Get processed_match_id data from db query
-2024-10-14 21:48:10 - INFO - Fetching data end: success 
- length: 20
-2024-10-14 21:48:10 - INFO - Transforming data start: 
- Filter to find matches that need to be processed
-2024-10-14 21:48:10 - INFO - Transforming data end: success 
- length: 29143
-2024-10-14 21:48:10 - INFO - Transforming data start: Truncate match_ids_to_process to 10 (to limit execution time)
-2024-10-14 21:48:10 - INFO - Transforming data end: success 
- length: 10
-2024-10-14 21:48:10 - INFO - Fetching data start: 
- get match_details from api calls
-2024-10-14 21:48:11 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5122232478?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:48:14 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5121204052?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:48:18 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5123915762?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:48:22 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5127840416?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:48:25 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5124430855?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:48:29 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5121938905?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:48:33 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5128781239?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:48:36 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5120633671?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:48:40 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5123123908?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:48:43 - INFO - HTTP Request: GET https://americas.api.riotgames.com/lol/match/v5/matches/NA1_5124932090?api_key=RGAPI-63a3af50-56ff-4e70-9c86-930bee86940a "HTTP/1.1 200 OK"
-2024-10-14 21:48:46 - INFO - Fetching data end: success 
- length: 10
-2024-10-14 21:48:46 - INFO - Transforming data start: marking processed matches true for database records
-2024-10-14 21:48:46 - INFO - Transforming data end: success , 
- length: 10
-2024-10-14 21:48:46 - INFO - Validating data start: 
- need to implement validation...
-2024-10-14 21:48:46 - INFO - Validating data end: 
- success
-2024-10-14 21:48:46 - INFO - Inserting data start: 
- database: challenger_stats_db, collection: match_detail
-2024-10-14 21:48:46 - INFO - Inserting data end: success 
- insert_id_list length: len[ObjectId('670df42e18bc965a97dca660'), ObjectId('670df42e18bc965a97dca661'), ObjectId('670df42e18bc965a97dca662'), ObjectId('670df42e18bc965a97dca663'), ObjectId('670df42e18bc965a97dca664'), ObjectId('670df42e18bc965a97dca665'), ObjectId('670df42e18bc965a97dca666'), ObjectId('670df42e18bc965a97dca667'), ObjectId('670df42e18bc965a97dca668'), ObjectId('670df42e18bc965a97dca669')]
-2024-10-14 21:48:46 - INFO - Inserting data start: 
- database: challenger_stats_db, collection: processed_match_id
-2024-10-14 21:48:46 - INFO - Inserting data end: success 
- insert_id_list length: len[ObjectId('670df42e18bc965a97dca66b'), ObjectId('670df42e18bc965a97dca66c'), ObjectId('670df42e18bc965a97dca66d'), ObjectId('670df42e18bc965a97dca66e'), ObjectId('670df42e18bc965a97dca66f'), ObjectId('670df42e18bc965a97dca670'), ObjectId('670df42e18bc965a97dca671'), ObjectId('670df42e18bc965a97dca672'), ObjectId('670df42e18bc965a97dca673'), ObjectId('670df42e18bc965a97dca674')]
-2024-10-14 21:48:46 - INFO - END SERVICE: update_match_detail
+2024-10-14 21:51:15 - INFO - Inserting data end: success 
+ insert_id_list length: 10
+2024-10-14 21:51:15 - INFO - END SERVICE: update_match_detail

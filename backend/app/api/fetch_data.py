@@ -11,7 +11,43 @@ import asyncio
 load_dotenv()
 API_KEY = os.getenv("DEFAULT_RIOT_API_KEY")
 SEASON_START_TIME_UNIX = os.getenv("SEASON_START_TIME_UNIX")
-RATE_LIMIT = int(os.getenv("RATE_LIMIT"))
+RATE_LIMIT = float(os.getenv("RATE_LIMIT"))
+MAX_RETRIES = int(os.getenv("MAX_RETRIES"))
+INITIAL_BACKOFF = float(os.getenv("INITIAL_BACKOFF"))
+
+
+# ===============================
+# Helper Functions
+# ===============================
+async def backoff_api_call(api_func, *args, **kwargs):
+    """
+    A generic function to apply exponential backoff on API calls.
+    Retries on 429 (Too Many Requests) errors.
+
+    :param api_func: the asynchronous function to call (e.g., fetch_matches)
+    :param args: positional arguments to pass to the API function
+    :param kwargs: keyword arguments to pass to the API function
+    :return: the API response (JSON)
+    """
+    retries = 0
+    backoff = INITIAL_BACKOFF
+
+    while retries < MAX_RETRIES:
+        try:
+            # Call the API function with provided arguments
+            return await api_func(*args, **kwargs)
+
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 429:
+                retries += 1
+                retry_after = int(e.response.headers.get("Retry-After", backoff))
+                print(f"Rate limited. Retrying after {retry_after} seconds... ({retries}/{MAX_RETRIES})")
+                await asyncio.sleep(retry_after)
+                backoff *= 2  # Exponentially increase the backoff time
+            else:
+                raise  # Re-raise any other status code errors
+
+    raise Exception("Max retries exceeded for API call.")
 
 
 # ===============================
@@ -185,11 +221,24 @@ async def fetch_match_details_all(region="americas", match_id_list=None, api_key
     if not match_id_list:
         raise ValueError("Match ID list cannot be blank.")
 
-
     match_details_all_list = []
+
+    # for match_id in match_id_list:
+    #     match_details = await fetch_match_details(region=region, match_id=match_id, api_key=API_KEY)
+    #     match_details_all_list.append(match_details)
+    #     await asyncio.sleep(RATE_LIMIT)
+    #
+    # return match_details_all_list
     for match_id in match_id_list:
-        match_details = await fetch_match_details(region=region, match_id=match_id, api_key=API_KEY)
-        match_details_all_list.append(match_details)
-        await asyncio.sleep(RATE_LIMIT)
+        try:
+            # Use backoff_api_call to fetch match details with retry logic
+            match_details = await backoff_api_call(fetch_match_details, region=region, match_id=match_id,
+                                                   api_key=api_key)
+            match_details_all_list.append(match_details)
+        except Exception as e:
+            print(f"Error fetching match details for match ID {match_id}: {e}")
+            break
+
+        await asyncio.sleep(RATE_LIMIT)  # Respect rate limiting between requests
 
     return match_details_all_list

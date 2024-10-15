@@ -167,6 +167,10 @@ async def update_match_ids_data():
     logging.info(f"END SERVICE: update_match_ids_data")
 
 
+# 10/14/2024 Execution time: update_match_detail
+    # From scratch to fully update database is currently expected to take ~ 10 hours
+    # starting from scratch will take longer as the season gets longer
+    # if the table are already populated this should take a matter of minutes
 async def update_match_detail():
     logging.info(f"START SERVICE: update_match_detail")
     # Fetch 1
@@ -209,7 +213,7 @@ async def update_match_detail():
     if validation_check:
         insert_id_list = insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail',
                                           data=match_details_list)
-        logging.info(f"Inserting data end: success \n insert_id_list length: len{insert_id_list}")
+        logging.info(f"Inserting data end: success \n insert_id_list length: {len(insert_id_list)}")
 
     # Insertion 2
     # ONLY PREFORM THIS IF DATA HAS ACTUALLY BEEN INSERTED (VALIDATE THIS WITH QUERY?)
@@ -217,7 +221,7 @@ async def update_match_detail():
     if validation_check:
         insert_id_list = insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='processed_match_id',
                                           data=match_ids_to_process_list)
-        logging.info(f"Inserting data end: success \n insert_id_list length: len{insert_id_list}")
+        logging.info(f"Inserting data end: success \n insert_id_list length: {len(insert_id_list)}")
 
 
 
