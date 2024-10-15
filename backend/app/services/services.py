@@ -169,7 +169,7 @@ async def update_match_ids_data():
 
 
 # 10/14/2024 Execution time: update_match_detail
-    # From scratch to fully update database is currently expected to take ~ 10 hours
+    # From scratch to fully update database is currently expected to take ~ 15 hours or 5 hours per 10k records
     # starting from scratch will take longer as the season gets longer
     # if the table are already populated this should take a matter of minutes
 async def update_match_detail():
