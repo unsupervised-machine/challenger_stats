@@ -10,6 +10,8 @@ import asyncio
 
 load_dotenv()
 API_KEY = os.getenv("DEFAULT_RIOT_API_KEY")
+SEASON_START_TIME_UNIX = os.getenv("SEASON_START_TIME_UNIX")
+RATE_LIMIT = int(os.getenv("RATE_LIMIT"))
 
 
 # ===============================
@@ -99,7 +101,7 @@ async def fetch_account_ids(region="na1", summoner_id=None, api_key=API_KEY):
 
 
 
-async def fetch_matches(region="americas", puuid=None, start_time="1727290800", queue="420", start="0", count="100", api_key=API_KEY):
+async def fetch_matches(region="americas", puuid=None, start_time=SEASON_START_TIME_UNIX, queue="420", start="0", count="100", api_key=API_KEY):
     """
     get a set of match ids
 
@@ -128,7 +130,7 @@ async def fetch_matches(region="americas", puuid=None, start_time="1727290800", 
         return response.json()
 
 
-async def fetch_matches_all(region="americas", puuid=None, start_time="1727290800", queue="420", count="100", api_key=API_KEY):
+async def fetch_matches_all(region="americas", puuid=None, start_time=SEASON_START_TIME_UNIX, queue="420", count="100", api_key=API_KEY):
     """
     get all the match_ids for a given puuid (capped at 1000 match_ids)
     :param start_time:
@@ -163,7 +165,7 @@ async def fetch_matches_all(region="americas", puuid=None, start_time="172729080
         if len(matches_all_list) >= 1000:
             break
 
-        await asyncio.sleep(1)
+        await asyncio.sleep(RATE_LIMIT)
 
     return matches_all_list
 
@@ -188,6 +190,6 @@ async def fetch_match_details_all(region="americas", match_id_list=None, api_key
     for match_id in match_id_list:
         match_details = await fetch_match_details(region=region, match_id=match_id, api_key=API_KEY)
         match_details_all_list.append(match_details)
-        await asyncio.sleep(1)
+        await asyncio.sleep(RATE_LIMIT)
 
     return match_details_all_list

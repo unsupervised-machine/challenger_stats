@@ -109,7 +109,7 @@ async def update_player_ids_data():
             "revisionDate": account_data["revisionDate"],
             "summonerLevel": account_data["summonerLevel"],
         })
-        await asyncio.sleep(1)
+        await asyncio.sleep(1.2)
 
     logging.info(f"Transforming data end: \n Data: {player_ids}")
 
@@ -127,8 +127,7 @@ async def update_player_ids_data():
 
 
 async def update_match_ids_data():
-    # ~ 4 HOUR RUN TIME
-    # ~ ??? HOUR RUN TIME (with start date)
+    # ~ 1 HOUR RUN TIME, with sleep time of 3 sec
 
     # Fetches
     # (1) Get puuids data from database
@@ -165,39 +164,6 @@ async def update_match_ids_data():
         logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
 
 
-async def test_update_match_ids_data():
-    sample_data = [
-    "NA1_5094052818",
-    "NA1_5094025673",
-    "NA1_5094004645",
-    "NA1_5093743124",
-    "NA1_5093691686",
-    "NA1_5093676941",
-    "NA1_5093663741",
-    "NA1_5093640600",
-    "NA1_5093614434",
-    "NA1_5093580825",
-    "NA1_5093543569",
-    "NA1_5093511842",
-    "NA1_5093472692",
-    "NA1_5093460107",
-    "NA1_5093434737",
-    "NA1_5093399713",
-    "NA1_5093391203",
-    "NA1_5093372010",
-    "NA1_5093341605",
-    "NA1_5093320600"
-    ]
-
-    insert_timestamp = datetime.now()
-
-    documents = [{"match_id": match_id, "inserted_at": insert_timestamp} for match_id in sample_data]
-
-    logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: match_id")
-    if True:
-        insert_id = clear_and_insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_id',
-                                          data=documents)
-        logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
 
 
 if __name__ == "__main__":
