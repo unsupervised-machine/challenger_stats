@@ -108,7 +108,7 @@ async def update_player_ids_data():
             "revisionDate": account_data["revisionDate"],
             "summonerLevel": account_data["summonerLevel"],
         })
-        await asyncio.sleep(1.2)
+        await asyncio.sleep(1.25)
 
     logging.info(f"Transforming data end: \n Data: {player_ids}")
 
@@ -244,11 +244,35 @@ async def update_match_detail():
     logging.info(f"END SERVICE: update_match_detail | Duration: {time_difference:.2f} seconds")
 
 
-async def update_player_stats():
-    # Fetch match details from database
+async def update_player_matches_stats():
+    logging.info(f"START SERVICE: update_player_matches_stats")
+
+    # Fetch list of all players from db
+    logging.info(f"Fetching data start: \n Get puuids data from db query")
+    puuids_list = get_player_puuids()
+    logging.info(f"Fetching data end: success \n length: {len(puuids_list)}")
+
+    logging.info(f"Fetching data start: \n Get puuids data from db query")
+    player_match_stats_list = []
+    # Fetch player matches stats from database
+    for puuid in puuids_list:
+        player_match_stats = get_player_stats_match_details(puuid)
+        player_match_stats_list.append(player_match_stats)
+    logging.info(f"Fetching data end: success \n length: {len(puuids_list)}")
+
+    # Validation
+    logging.info(f"Validating data start: \n need to implement validation...")
+    validation_check = True
+    logging.info(f"Validating data end: \n success")
+
     # Insert records into player_matches_stats
+    logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: player_matches_stats")
+    if validation_check:
+        insert_id_list = insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_matches_stats',
+                                          data=player_match_stats_list)
+        logging.info(f"Inserting data end: success \n insert_id_list length: {len(insert_id_list)}")
 
-
+    logging.info(f"END SERVICE: update_player_matches_stats")
 
 
 async def _dev_clean_unprocessed_matches():

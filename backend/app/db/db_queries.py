@@ -156,7 +156,7 @@ def get_match_detail_ids(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_
 def get_match_detail_from_puuid(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail',
                                               player_puuid=None):
     """
-    return list of tuples of all match details which contain specified player, along with the participant index of the player in the match
+    return list of tuples of all match details which contain specified player, along with the participant index of the player in the match, and the matchId
     :param db_uri:
     :param db_name:
     :param collection_name:
@@ -170,30 +170,32 @@ def get_match_detail_from_puuid(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, coll
 
     matching_records = get_data(db_uri, db_name, collection_name, filter=filter)
 
-    player_index_record_tuples = []
+    player_record_tuples = []
 
     for record in matching_records:
         participants = record['metadata']['participants']
+        match_id = record['metadata']['matchId']
         if player_puuid in participants:
             index = participants.index(player_puuid)
-            player_index_record_tuples.append((index, record))
+            player_record_tuples.append((match_id, index, record))
 
-    return player_index_record_tuples
+    return player_record_tuples
 
 
 def get_player_stats_match_details(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail',
                                               player_puuid=None):
 
     # list of tuples [(player_index, match_details)]
-    index_record_list = get_match_detail_from_puuid(db_uri, db_name, collection_name, player_puuid=player_puuid)
+    match_id_index_record_list = get_match_detail_from_puuid(db_uri, db_name, collection_name, player_puuid=player_puuid)
 
     # List to store player stats
     player_stats_list = []
 
-    for player_index, match_details in index_record_list:
+    for match_id, player_index, match_details in match_id_index_record_list:
         try:
             participant_data = match_details['info']['participants'][player_index]
             player_stats = {
+                "match_id": match_id,
                 "player_index": player_index,
                 "puuid": participant_data['puuid'],
                 "kills": participant_data['kills'],
@@ -209,7 +211,6 @@ def get_player_stats_match_details(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, c
             player_stats_list.append(player_stats)
 
         except (KeyError, IndexError) as e:
-            print(f"Error extracting data for player index {player_index} in match: {e}")
-
+            print(f"Error extracting data for player index {player_index} in match {match_id}: {e}")
 
     return player_stats_list
