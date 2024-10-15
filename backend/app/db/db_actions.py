@@ -29,7 +29,6 @@ def clear_and_insert_data(db_uri, db_name, collection_name, data):
         return result.inserted_id
 
 
-# noinspection PyShadowingBuiltins
 def get_data(db_uri, db_name, collection_name, filter=None, sort_field=None, limit=None, projection=None, pipeline=None):
     db = get_db(db_uri, db_name)
     collection = db[collection_name]
@@ -46,3 +45,20 @@ def get_data(db_uri, db_name, collection_name, filter=None, sort_field=None, lim
             cursor = cursor.limit(limit)
 
     return list(cursor)
+
+
+def clear_collection_data(db_uri, db_name, collection_name):
+    """
+    Clear all entries in a specified collection.
+
+    :param db_uri: URI for the MongoDB database connection
+    :param db_name: Name of the database
+    :param collection_name: Name of the collection to clear
+    :return: Result of the delete operation
+    """
+    db = get_db(db_uri, db_name)
+    collection = db[collection_name]
+
+    # Clear all entries in the collection
+    result = collection.delete_many({})
+    return result.deleted_count  # Returns the number of documents deleted

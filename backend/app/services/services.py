@@ -3,9 +3,9 @@ from datetime import datetime
 from pydantic.v1 import ValidationError
 from typing_extensions import assert_never
 
-from backend.app.api.fetch_data import fetch_apex_leagues, fetch_account_ids, fetch_matches_all
-from backend.app.db.db_actions import insert_data, clear_and_insert_data
-from backend.app.db.db_queries import get_recent_players, get_player_puuids
+from backend.app.api.fetch_data import fetch_apex_leagues, fetch_account_ids, fetch_matches_all, fetch_match_details_all
+from backend.app.db.db_actions import insert_data, clear_and_insert_data, clear_collection_data
+from backend.app.db.db_queries import get_recent_players, get_player_puuids, get_match_ids, get_processed_match_ids
 from backend.app.api.validation import League
 from backend.app.api.transform_data import add_timestamps
 
@@ -164,6 +164,86 @@ async def update_match_ids_data():
         logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
 
 
+async def update_processed_match_ids():
+    logging.info(f"START: update_processed_match_ids")
+    # Fetch
+    logging.info(f"Fetching data start: \n get match_ids data from db query")
+    match_id_data = get_match_ids()
+    logging.info(f"Fetching data end: success \n Data: {match_id_data}, \n length: {len(match_id_data)}")
+
+    logging.info(f"Fetching data start: \n get processed_match_id data from db query")
+    processed_match_id_data = get_processed_match_ids()
+    logging.info(f"Fetching data end: success \n Data: {processed_match_id_data}, \n length: {len(processed_match_id_data)}")
+
+    # Transform
+    logging.info(f"Transforming data start: \n Filter to find matches that need to be processed")
+    match_ids_to_process = [match_id for match_id in match_id_data if match_id not in processed_match_id_data]
+    logging.info(f"Transforming data end: success \n Data: {match_ids_to_process}, \n length: {len(match_ids_to_process)}")
+
+    logging.info(f"Transforming data start: Truncate match_ids_to_process to 10 (to limit execution time)")
+    match_ids_to_process = match_ids_to_process[0:10]
+    logging.info(f"Transforming data end: success \n Data: {match_ids_to_process}, \n length: {len(match_ids_to_process)}")
+
+    logging.info(f"Preforming api call on each of the matches...")
+    match_details_list = await fetch_match_details_all(match_id_list=match_ids_to_process)
+    logging.info(f"Finished api processing matches \n Data: {match_details_list} \n length: {len(match_details_list)}")
+
+    logging.info(f"Preparing marking processed matches true for database records")
+    match_ids_to_process_list = [{"match_id": match_id, "processed_with_api_call": True} for match_id in match_ids_to_process]
+    logging.info(f"Finished preparing matches true for database records")
+
+    # Validation
+    # validate data before insertion
+    logging.info(f"Validating data start: \n need to implement validation...")
+    # need to implement this with pydantic...
+    validation_check = True
+    logging.info(f"Validating data end: \n success")
+
+    # Insertion 1
+    logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: match_detail")
+    if validation_check:
+        insert_id = insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail',
+                                          data=match_details_list)
+        logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
+
+    # Insertion 2
+    # ONLY PREFORM THIS IF DATA HAS ACTUALLY BEEN INSERTED (VALIDATE THIS WITH QUERY?)
+    logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: processed_match_id")
+    if validation_check:
+        insert_id = insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='processed_match_id',
+                                          data=match_ids_to_process_list)
+        logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
+
+
+
+    logging.info(f"END: update_processed_match_ids")
+
+
+async def test_get_match_ids():
+    logging.info(f"Fetching data start: \n get match_ids data from db query")
+    puuid_data = get_match_ids()
+    logging.info(f"Fetching data end: success \n Data: {puuid_data}")
+
+
+async def test_get_processed_match_ids():
+    logging.info(f"Fetching data start: \n get processed_match_ids data from db query")
+    puuid_data = get_processed_match_ids()
+    logging.info(f"Fetching data end: success \n Data: {puuid_data}")
+
+
+async def _dev_clear_collection_data(collection_name="sample"):
+    # Prompt the user for confirmation
+    confirmation = input(
+        f"Are you sure you want to clear all data from the '{collection_name}' collection? (yes/no): ").strip().lower()
+
+    if confirmation == 'yes':
+        deleted_count = clear_collection_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME,
+                                              collection_name=collection_name)
+        logging.info(f'Deleted {deleted_count} documents from the collection: {collection_name}.')
+        print(f'Deleted {deleted_count} documents from the collection.')
+    else:
+        logging.info("Operation canceled by user. No data was deleted.")
+        print("Operation canceled. No data was deleted.")
 
 
 if __name__ == "__main__":
@@ -171,5 +251,10 @@ if __name__ == "__main__":
     # asyncio.run(update_league_data())
     # asyncio.run(query_recent_players())
     # asyncio.run(update_player_ids_data())
-    asyncio.run(update_match_ids_data())
-    # asyncio.run(test_update_match_ids_data())
+    # asyncio.run(update_match_ids_data())
+    # asyncio.run(update_processed_match_ids())
+    asyncio.run(_dev_clear_collection_data())
+
+    # asyncio.run(test_get_match_ids())
+    # asyncio.run(test_get_processed_match_ids())
+

@@ -99,10 +99,38 @@ def get_player_puuids(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_nam
 
 
 def get_match_ids(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_id'):
+    """
+    get all match ids stored in database
+    :param db_uri:
+    :param db_name:
+    :param collection_name:
+    :return:
+    """
     projection = {
         "_id": 0,
         "match_id": 1,
     }
     data = get_data(db_uri, db_name, collection_name, projection=projection)
+    results = [item['match_id'] for item in data]
+    return results
+
+
+def get_processed_match_ids(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='processed_match_id'):
+    """
+    get all match ids that have been processed through api call
+    :param db_uri:
+    :param db_name:
+    :param collection_name:
+    :return:
+    """
+    projection = {
+        "_id": 0,
+        "match_id": 1
+    }
+    filter = {
+        "processed_with_api_call": True
+    }
+
+    data = get_data(db_uri, db_name, collection_name, projection=projection, filter=filter)
     results = [item['match_id'] for item in data]
     return results
