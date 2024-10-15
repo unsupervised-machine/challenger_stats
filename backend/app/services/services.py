@@ -44,6 +44,7 @@ logging.basicConfig(
 
 # Fetch Data
 async def update_league_data():
+    logging.info(f"START SERVICE: update_league_data")
     # Fetch Data
     logging.info(f"Fetching data start: master league from NA")
     data = await fetch_apex_leagues(apex_rank='master')
@@ -70,24 +71,21 @@ async def update_league_data():
     insert_id = insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='league', data=validated_data)
     logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
 
+    logging.info(f"END SERVICE: update_league_data")
+
 
 async def query_recent_players():
+    logging.info(f"START SERVICE: query_recent_players")
     # Fetch Data
     logging.info(f"Database query start: get_recent_players")
     data = get_recent_players()
     logging.info(f"Database query end: length is {len(data)} \n Data: {data}")
 
-    # Transform Data
-    # Since this is a query we only need to fetch the data...
-
-    # Validate Data
-    # Since this is a query we only need to fetch the data...
-
-    # Insert Data
-    # Since this is a query we only need to fetch the data...
+    logging.info(f"END SERVICE: query_recent_players")
 
 
 async def update_player_ids_data():
+    logging.info(f"START SERVICE: update_player_ids_data")
     # Fetch Data
     logging.info(f"Fetching data start: \n get recent_player data from db query")
     apex_league_data = get_recent_players()
@@ -125,8 +123,11 @@ async def update_player_ids_data():
         insert_id = clear_and_insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_ids', data=player_ids)
         logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
 
+    logging.info(f"END SERVICE: update_player_ids_data")
+
 
 async def update_match_ids_data():
+    logging.info(f"START SERVICE: update_match_ids_data")
     # ~ 1 HOUR RUN TIME, with sleep time of 3 sec
 
     # Fetches
@@ -163,34 +164,38 @@ async def update_match_ids_data():
                                           data=documents)
         logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
 
+    logging.info(f"END SERVICE: update_match_ids_data")
 
-async def update_processed_match_ids():
-    logging.info(f"START: update_processed_match_ids")
-    # Fetch
-    logging.info(f"Fetching data start: \n get match_ids data from db query")
+
+async def update_match_detail():
+    logging.info(f"START SERVICE: update_match_detail")
+    # Fetch 1
+    logging.info(f"Fetching data start: \n Get match_id data from db query")
     match_id_data = get_match_ids()
-    logging.info(f"Fetching data end: success \n Data: {match_id_data}, \n length: {len(match_id_data)}")
+    logging.info(f"Fetching data end: success \n length: {len(match_id_data)}")
 
-    logging.info(f"Fetching data start: \n get processed_match_id data from db query")
+    logging.info(f"Fetching data start: \n Get processed_match_id data from db query")
     processed_match_id_data = get_processed_match_ids()
-    logging.info(f"Fetching data end: success \n Data: {processed_match_id_data}, \n length: {len(processed_match_id_data)}")
+    logging.info(f"Fetching data end: success \n length: {len(processed_match_id_data)}")
 
-    # Transform
+    # Transform 2
     logging.info(f"Transforming data start: \n Filter to find matches that need to be processed")
     match_ids_to_process = [match_id for match_id in match_id_data if match_id not in processed_match_id_data]
-    logging.info(f"Transforming data end: success \n Data: {match_ids_to_process}, \n length: {len(match_ids_to_process)}")
+    logging.info(f"Transforming data end: success \n length: {len(match_ids_to_process)}")
 
     logging.info(f"Transforming data start: Truncate match_ids_to_process to 10 (to limit execution time)")
     match_ids_to_process = match_ids_to_process[0:10]
-    logging.info(f"Transforming data end: success \n Data: {match_ids_to_process}, \n length: {len(match_ids_to_process)}")
+    logging.info(f"Transforming data end: success \n length: {len(match_ids_to_process)}")
 
-    logging.info(f"Preforming api call on each of the matches...")
+    # Fetch 2
+    logging.info(f"Fetching data start: \n get match_details from api calls")
     match_details_list = await fetch_match_details_all(match_id_list=match_ids_to_process)
-    logging.info(f"Finished api processing matches \n Data: {match_details_list} \n length: {len(match_details_list)}")
+    logging.info(f"Fetching data end: success \n length: {len(match_details_list)}")
 
-    logging.info(f"Preparing marking processed matches true for database records")
+    # Transform 2
+    logging.info(f"Transforming data start: marking processed matches true for database records")
     match_ids_to_process_list = [{"match_id": match_id, "processed_with_api_call": True} for match_id in match_ids_to_process]
-    logging.info(f"Finished preparing matches true for database records")
+    logging.info(f"Transforming data end: success , \n length: {len(match_ids_to_process_list)}")
 
     # Validation
     # validate data before insertion
@@ -216,22 +221,12 @@ async def update_processed_match_ids():
 
 
 
-    logging.info(f"END: update_processed_match_ids")
-
-
-async def test_get_match_ids():
-    logging.info(f"Fetching data start: \n get match_ids data from db query")
-    puuid_data = get_match_ids()
-    logging.info(f"Fetching data end: success \n Data: {puuid_data}")
-
-
-async def test_get_processed_match_ids():
-    logging.info(f"Fetching data start: \n get processed_match_ids data from db query")
-    puuid_data = get_processed_match_ids()
-    logging.info(f"Fetching data end: success \n Data: {puuid_data}")
+    logging.info(f"END SERVICE: update_match_detail")
 
 
 async def _dev_clear_collection_data(collection_name="sample"):
+    logging.info(f"START SERVICE: _dev_clear_collection_data")
+
     # Prompt the user for confirmation
     confirmation = input(
         f"Are you sure you want to clear all data from the '{collection_name}' collection? (yes/no): ").strip().lower()
@@ -245,6 +240,7 @@ async def _dev_clear_collection_data(collection_name="sample"):
         logging.info("Operation canceled by user. No data was deleted.")
         print("Operation canceled. No data was deleted.")
 
+    logging.info(f"END SERVICE: _dev_clear_collection_data")
 
 if __name__ == "__main__":
     import asyncio
@@ -252,9 +248,7 @@ if __name__ == "__main__":
     # asyncio.run(query_recent_players())
     # asyncio.run(update_player_ids_data())
     # asyncio.run(update_match_ids_data())
-    # asyncio.run(update_processed_match_ids())
-    asyncio.run(_dev_clear_collection_data())
+    asyncio.run(update_match_detail())
+    # asyncio.run(_dev_clear_collection_data())
 
-    # asyncio.run(test_get_match_ids())
-    # asyncio.run(test_get_processed_match_ids())
 
