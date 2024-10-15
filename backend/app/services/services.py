@@ -1,4 +1,5 @@
-from datetime import datetime
+import time
+from datetime import datetime, timedelta
 
 from pydantic.v1 import ValidationError
 from typing_extensions import assert_never
@@ -173,6 +174,9 @@ async def update_match_ids_data():
     # if the table are already populated this should take a matter of minutes
 async def update_match_detail():
     logging.info(f"START SERVICE: update_match_detail")
+    # Capture the start time
+    start_time = time.time()
+
     # Fetch 1
     logging.info(f"Fetching data start: \n Get match_id data from db query")
     match_id_data = get_match_ids()
@@ -187,8 +191,8 @@ async def update_match_detail():
     match_ids_to_process = [match_id for match_id in match_id_data if match_id not in processed_match_id_data]
     logging.info(f"Transforming data end: success \n length: {len(match_ids_to_process)}")
 
-    logging.info(f"Transforming data start: Truncate match_ids_to_process to 10 (to limit execution time)")
-    match_ids_to_process = match_ids_to_process[0:10]
+    logging.info(f"Transforming data start: Truncate match_ids_to_process to 1000 (to limit execution time)")
+    match_ids_to_process = match_ids_to_process[0:1000]
     logging.info(f"Transforming data end: success \n length: {len(match_ids_to_process)}")
 
     # Fetch 2
@@ -223,9 +227,16 @@ async def update_match_detail():
                                           data=match_ids_to_process_list)
         logging.info(f"Inserting data end: success \n insert_id_list length: {len(insert_id_list)}")
 
+    # Capture the end time
+    end_time = time.time()
 
+    # Calculate the time difference
+    time_difference = end_time - start_time
 
-    logging.info(f"END SERVICE: update_match_detail")
+    # Format time differnce as hours minutes seconds
+    formatted_duration = str(timedelta(seconds=time_difference))
+
+    logging.info(f"END SERVICE: update_match_detail | Duration: {time_difference:.2f} seconds")
 
 
 async def _dev_clear_collection_data(collection_name="sample"):
