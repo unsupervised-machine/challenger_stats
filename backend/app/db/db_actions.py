@@ -62,3 +62,11 @@ def clear_collection_data(db_uri, db_name, collection_name):
     # Clear all entries in the collection
     result = collection.delete_many({})
     return result.deleted_count  # Returns the number of documents deleted
+
+
+def remove_records(db_uri, db_name, collection_name, data, unique_id):
+    db = get_db(db_uri, db_name)
+    collection = db[collection_name]
+
+    result = collection.delete_many({unique_id: {'$in': data}})
+    return result.deleted_count

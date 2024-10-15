@@ -134,3 +134,20 @@ def get_processed_match_ids(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collecti
     data = get_data(db_uri, db_name, collection_name, projection=projection, filter=filter)
     results = [item['match_id'] for item in data]
     return results
+
+def get_match_detail_ids(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail'):
+    """
+    this will mostly be used to validate the data is in match detail before updating processed_match_id
+    :param db_uri:
+    :param db_name:
+    :param collection_name:
+    :return:
+    """
+    projection = {
+        "_id": 0,
+        "metadata.matchId": 1
+    }
+    data = get_data(db_uri, db_name, collection_name, projection=projection)
+    results = [doc['metadata']['matchId'] for doc in data if 'metadata' in doc and 'matchId' in doc['metadata']]
+
+    return results

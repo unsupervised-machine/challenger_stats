@@ -5,8 +5,8 @@ from pydantic.v1 import ValidationError
 from typing_extensions import assert_never
 
 from backend.app.api.fetch_data import fetch_apex_leagues, fetch_account_ids, fetch_matches_all, fetch_match_details_all
-from backend.app.db.db_actions import insert_data, clear_and_insert_data, clear_collection_data
-from backend.app.db.db_queries import get_recent_players, get_player_puuids, get_match_ids, get_processed_match_ids
+from backend.app.db.db_actions import insert_data, clear_and_insert_data, clear_collection_data, remove_records
+from backend.app.db.db_queries import get_recent_players, get_player_puuids, get_match_ids, get_processed_match_ids, get_match_detail_ids
 from backend.app.api.validation import League
 from backend.app.api.transform_data import add_timestamps
 
@@ -239,6 +239,43 @@ async def update_match_detail():
     logging.info(f"END SERVICE: update_match_detail | Duration: {time_difference:.2f} seconds")
 
 
+async def clean_unprocessed_matches():
+    logging.info(f"START SERVICE: clean_unprocessed_matches")
+    claim = get_processed_match_ids()
+    logging.info(f"Claimed to be processed length: {len(claim)}")
+
+    actual = get_match_detail_ids()
+    logging.info(f"Actual processed length: {len(actual)}")
+
+    not_accounted_match_id = list(set(claim) - set(actual))
+    logging.info(f"Not accounted for not_accounted_match_id: {len(not_accounted_match_id)}")
+    logging.info(f"Sample data for not_accounted_match_id: {not_accounted_match_id[0:10]}")
+
+    logging.info(f"Begin removing bad records")
+
+    # THIS REMOVE RECORDS CAREFUL!!!
+    removed_records_count = remove_records(db_uri=MONGO_DB_URI,
+                                           db_name=MONGO_DB_NAME,
+                                           collection_name='processed_match_id',
+                                           data=not_accounted_match_id,
+                                           unique_id='match_id')
+
+    logging.info(f"Removed bad records: {removed_records_count}")
+
+    new_claim = get_processed_match_ids()
+    logging.info(f"New claimed to be processed length: {len(new_claim)}")
+
+    new_actual = get_match_detail_ids()
+    logging.info(f"New actual processed length: {len(new_actual)}")
+
+
+    logging.info(f"END SERVICE: clean_unprocessed_matches")
+
+
+
+
+
+
 async def _dev_clear_collection_data(collection_name="sample"):
     logging.info(f"START SERVICE: _dev_clear_collection_data")
 
@@ -263,7 +300,9 @@ if __name__ == "__main__":
     # asyncio.run(query_recent_players())
     # asyncio.run(update_player_ids_data())
     # asyncio.run(update_match_ids_data())
-    asyncio.run(update_match_detail())
+    # asyncio.run(update_match_detail())
+    asyncio.run(clean_unprocessed_matches())
+
     # asyncio.run(_dev_clear_collection_data())
 
 
