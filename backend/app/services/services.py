@@ -6,7 +6,7 @@ from typing_extensions import assert_never
 
 from backend.app.api.fetch_data import fetch_apex_leagues, fetch_account_ids, fetch_matches_all, fetch_match_details_all
 from backend.app.db.db_actions import insert_data, clear_and_insert_data, clear_collection_data, remove_records
-from backend.app.db.db_queries import get_recent_players, get_player_puuids, get_match_ids, get_processed_match_ids, get_match_detail_ids
+from backend.app.db.db_queries import get_recent_players, get_player_puuids, get_match_ids, get_processed_match_ids, get_match_detail_ids, get_player_stats_match_details
 from backend.app.api.validation import League
 from backend.app.api.transform_data import add_timestamps
 
@@ -197,7 +197,12 @@ async def update_match_detail():
 
     # Fetch 2
     logging.info(f"Fetching data start: \n get match_details from api calls")
-    match_details_list = await fetch_match_details_all(match_id_list=match_ids_to_process)
+    match_details_list = []
+    try:
+        match_details_list = await fetch_match_details_all(match_id_list=match_ids_to_process)
+    except Exception as e:
+        logging.error(f"An error occurred while fetching match details: {e}", exc_info=True)
+
     logging.info(f"Fetching data end: success \n length: {len(match_details_list)}")
 
     # Transform 2
@@ -239,8 +244,15 @@ async def update_match_detail():
     logging.info(f"END SERVICE: update_match_detail | Duration: {time_difference:.2f} seconds")
 
 
-async def clean_unprocessed_matches():
-    logging.info(f"START SERVICE: clean_unprocessed_matches")
+async def update_player_stats():
+    # Fetch match details from database
+    # Insert records into player_matches_stats
+
+
+
+
+async def _dev_clean_unprocessed_matches():
+    logging.info(f"START SERVICE: _dev_clean_unprocessed_matches")
     claim = get_processed_match_ids()
     logging.info(f"Claimed to be processed length: {len(claim)}")
 
@@ -269,11 +281,7 @@ async def clean_unprocessed_matches():
     logging.info(f"New actual processed length: {len(new_actual)}")
 
 
-    logging.info(f"END SERVICE: clean_unprocessed_matches")
-
-
-
-
+    logging.info(f"END SERVICE: _dev_clean_unprocessed_matches")
 
 
 async def _dev_clear_collection_data(collection_name="sample"):
@@ -300,9 +308,9 @@ if __name__ == "__main__":
     # asyncio.run(query_recent_players())
     # asyncio.run(update_player_ids_data())
     # asyncio.run(update_match_ids_data())
-    # asyncio.run(update_match_detail())
-    asyncio.run(clean_unprocessed_matches())
+    asyncio.run(update_match_detail())
 
+    # asyncio.run(_dev_clean_unprocessed_matches())
     # asyncio.run(_dev_clear_collection_data())
 
 

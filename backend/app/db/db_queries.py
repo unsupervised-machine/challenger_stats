@@ -151,3 +151,65 @@ def get_match_detail_ids(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_
     results = [doc['metadata']['matchId'] for doc in data if 'metadata' in doc and 'matchId' in doc['metadata']]
 
     return results
+
+
+def get_match_detail_from_puuid(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail',
+                                              player_puuid=None):
+    """
+    return list of tuples of all match details which contain specified player, along with the participant index of the player in the match
+    :param db_uri:
+    :param db_name:
+    :param collection_name:
+    :param player_puuid:
+    :return:
+    """
+
+    filter = {
+        "metadata.participants": player_puuid
+    }
+
+    matching_records = get_data(db_uri, db_name, collection_name, filter=filter)
+
+    player_index_record_tuples = []
+
+    for record in matching_records:
+        participants = record['metadata']['participants']
+        if player_puuid in participants:
+            index = participants.index(player_puuid)
+            player_index_record_tuples.append((index, record))
+
+    return player_index_record_tuples
+
+
+def get_player_stats_match_details(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail',
+                                              player_puuid=None):
+
+    # list of tuples [(player_index, match_details)]
+    index_record_list = get_match_detail_from_puuid(db_uri, db_name, collection_name, player_puuid=player_puuid)
+
+    # List to store player stats
+    player_stats_list = []
+
+    for player_index, match_details in index_record_list:
+        try:
+            participant_data = match_details['info']['participants'][player_index]
+            player_stats = {
+                "player_index": player_index,
+                "puuid": participant_data['puuid'],
+                "kills": participant_data['kills'],
+                "deaths": participant_data['deaths'],
+                "assists": participant_data['assists'],
+                "champion_name": participant_data['championName'],
+                "champion_id": participant_data['championId'],
+                "team_position": participant_data['teamPosition'],
+                "win": participant_data['win']
+            }
+
+            # Append stats as a tuple
+            player_stats_list.append(player_stats)
+
+        except (KeyError, IndexError) as e:
+            print(f"Error extracting data for player index {player_index} in match: {e}")
+
+
+    return player_stats_list

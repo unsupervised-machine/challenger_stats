@@ -242,3 +242,5 @@ async def fetch_match_details_all(region="americas", match_id_list=None, api_key
         await asyncio.sleep(RATE_LIMIT)  # Respect rate limiting between requests
 
     return match_details_all_list
+
+
