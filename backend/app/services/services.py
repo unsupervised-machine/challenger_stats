@@ -207,17 +207,17 @@ async def update_match_detail():
     # Insertion 1
     logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: match_detail")
     if validation_check:
-        insert_id = insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail',
+        insert_id_list = insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail',
                                           data=match_details_list)
-        logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
+        logging.info(f"Inserting data end: success \n insert_id_list length: len{insert_id_list}")
 
     # Insertion 2
     # ONLY PREFORM THIS IF DATA HAS ACTUALLY BEEN INSERTED (VALIDATE THIS WITH QUERY?)
     logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: processed_match_id")
     if validation_check:
-        insert_id = insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='processed_match_id',
+        insert_id_list = insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='processed_match_id',
                                           data=match_ids_to_process_list)
-        logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
+        logging.info(f"Inserting data end: success \n insert_id_list length: len{insert_id_list}")
 
 
 
