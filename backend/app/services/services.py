@@ -191,8 +191,8 @@ async def update_match_detail():
     match_ids_to_process = [match_id for match_id in match_id_data if match_id not in processed_match_id_data]
     logging.info(f"Transforming data end: success \n length: {len(match_ids_to_process)}")
 
-    logging.info(f"Transforming data start: Truncate match_ids_to_process to 10000 (to limit execution time)")
-    match_ids_to_process = match_ids_to_process[0:10000]
+    logging.info(f"Transforming data start: Truncate match_ids_to_process to 2000 (to limit execution time)")
+    match_ids_to_process = match_ids_to_process[0:2000]
     logging.info(f"Transforming data end: success \n length: {len(match_ids_to_process)}")
 
     # Fetch 2
@@ -250,14 +250,16 @@ async def update_player_matches_stats():
     # Fetch list of all players from db
     logging.info(f"Fetching data start: \n Get puuids data from db query")
     puuids_list = get_player_puuids()
+    logging.info(f"puuids_list sample: {puuids_list[0:10]}")
+
     logging.info(f"Fetching data end: success \n length: {len(puuids_list)}")
 
-    logging.info(f"Fetching data start: \n Get puuids data from db query")
+    logging.info(f"Fetching data start: \n Get player_match_stats data from db query")
     player_match_stats_list = []
     # Fetch player matches stats from database
     for puuid in puuids_list:
-        player_match_stats = get_player_stats_match_details(puuid)
-        player_match_stats_list.append(player_match_stats)
+        player_match_stats = get_player_stats_match_details(player_puuid=puuid)
+        player_match_stats_list.extend(player_match_stats)
     logging.info(f"Fetching data end: success \n length: {len(puuids_list)}")
 
     # Validation
@@ -266,6 +268,8 @@ async def update_player_matches_stats():
     logging.info(f"Validating data end: \n success")
 
     # Insert records into player_matches_stats
+    logging.info(f"Data trying to insert: {player_match_stats_list[0:10]}")
+
     logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: player_matches_stats")
     if validation_check:
         insert_id_list = insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_matches_stats',
@@ -332,7 +336,8 @@ if __name__ == "__main__":
     # asyncio.run(query_recent_players())
     # asyncio.run(update_player_ids_data())
     # asyncio.run(update_match_ids_data())
-    asyncio.run(update_match_detail())
+    # asyncio.run(update_match_detail())
+    asyncio.run(update_player_matches_stats())
 
     # asyncio.run(_dev_clean_unprocessed_matches())
     # asyncio.run(_dev_clear_collection_data())
