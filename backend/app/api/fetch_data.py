@@ -113,9 +113,6 @@ async def fetch_apex_leagues(apex_rank=None, queue="RANKED_SOLO_5x5", region="na
 
 
 async def fetch_account_ids(region="na1", summoner_id=None, api_key=API_KEY):
-    # API LIMITS:
-        #  1600 requests every 1 minutes
-
     if not summoner_id:
         raise ValueError("Summoner ID cannot be blank.")
 
@@ -126,6 +123,29 @@ async def fetch_account_ids(region="na1", summoner_id=None, api_key=API_KEY):
         response.raise_for_status()
         return response.json()
 
+
+async def fetch_game_name_tagline(region="americas", puuid=None, api_key=API_KEY):
+    url = f"https://{region}.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puuid}?api_key={api_key}"
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+        response.raise_for_status()
+        return response.json()
+
+async def fetch_game_name_tagline_all(region="americas", puuid_list=None, api_key=API_KEY):
+    if not puuid_list:
+        raise ValueError("puuid list cannot be blank.")
+    game_name_tagline_all_list = []
+    for puuid in puuid_list:
+        try:
+            api_data = await backoff_api_call(fetch_game_name_tagline, region=region, puuid=puuid, api_key=api_key)
+            game_name_tagline_all_list.append(api_data)
+        except Exception as e:
+            print(f"Error fetching game_name_tagline for player puuid {puuid}: {e}")
+            break
+
+        await asyncio.sleep(RATE_LIMIT)  # Respect rate limiting between requests
+
+    return game_name_tagline_all_list
 
 # ===============================
 # Matches
