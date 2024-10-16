@@ -214,3 +214,36 @@ def get_player_stats_match_details(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, c
             print(f"Error extracting data for player index {player_index} in match {match_id}: {e}")
 
     return player_stats_list
+
+
+
+def get_player_summarized_stats(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_matches_stats',
+                                              player_puuid=None):
+    pipeline = [
+        {"$match": {"puuid": player_puuid}},
+        {
+            "$group": {
+                "_id": "$puuid",
+                "average_kills": {"$avg": "$kills"},
+                "average_deaths": {"$avg": "$deaths"},
+                "average_assists": {"$avg": "$assists"},
+                "match_count": {"$sum": 1},
+                "average_win_rate": {
+                    "$avg": {
+                        "$cond": {
+                            "if": {"$eq": ["$win", True]},
+                            "then": 1,
+                            "else": 0
+                        }
+                    }
+                }
+            }
+        }
+    ]
+
+    result = get_data(db_uri, db_name, collection_name, pipeline=pipeline)
+
+    return result
+
+
+

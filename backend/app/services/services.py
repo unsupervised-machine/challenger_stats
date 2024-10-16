@@ -6,7 +6,7 @@ from typing_extensions import assert_never
 
 from backend.app.api.fetch_data import fetch_apex_leagues, fetch_account_ids, fetch_matches_all, fetch_match_details_all
 from backend.app.db.db_actions import insert_data, clear_and_insert_data, clear_collection_data, remove_records
-from backend.app.db.db_queries import get_recent_players, get_player_puuids, get_match_ids, get_processed_match_ids, get_match_detail_ids, get_player_stats_match_details
+from backend.app.db.db_queries import get_recent_players, get_player_puuids, get_match_ids, get_processed_match_ids, get_match_detail_ids, get_player_stats_match_details, get_player_summarized_stats
 from backend.app.api.validation import League
 from backend.app.api.transform_data import add_timestamps
 
@@ -247,20 +247,21 @@ async def update_match_detail():
 async def update_player_matches_stats():
     logging.info(f"START SERVICE: update_player_matches_stats")
 
-    # Fetch list of all players from db
+    # Fetch list of all players from db query
     logging.info(f"Fetching data start: \n Get puuids data from db query")
     puuids_list = get_player_puuids()
     logging.info(f"puuids_list sample: {puuids_list[0:10]}")
 
     logging.info(f"Fetching data end: success \n length: {len(puuids_list)}")
 
-    logging.info(f"Fetching data start: \n Get player_match_stats data from db query")
+    logging.info(f"Transform data start: \n Generate player_match_stats data from db query")
     player_match_stats_list = []
-    # Fetch player matches stats from database
+
+    # Transform Generate player matches stats from database query
     for puuid in puuids_list:
         player_match_stats = get_player_stats_match_details(player_puuid=puuid)
         player_match_stats_list.extend(player_match_stats)
-    logging.info(f"Fetching data end: success \n length: {len(puuids_list)}")
+    logging.info(f"Transform data end: success \n length: {len(player_match_stats_list)}")
 
     # Validation
     logging.info(f"Validating data start: \n need to implement validation...")
@@ -277,6 +278,40 @@ async def update_player_matches_stats():
         logging.info(f"Inserting data end: success \n insert_id_list length: {len(insert_id_list)}")
 
     logging.info(f"END SERVICE: update_player_matches_stats")
+
+
+async def update_player_summarized_stats():
+    logging.info(f"START SERVICE: update_player_summarized_stats")
+
+    # Fetch list of all players from db
+    logging.info(f"Fetching data start: \n Get puuids data from db query")
+    puuids_list = get_player_puuids()
+    logging.info(f"puuids_list sample: {puuids_list[0:10]}")
+    logging.info(f"Fetching data end: success \n length: {len(puuids_list)}")
+
+    # Transform generate player matches stats from database
+    logging.info(f"Transform data start: \n Generate player_summarized_stats data from db query")
+    player_summarized_stats_list = []
+    for puuid in puuids_list:
+        player_summarized_stats = get_player_summarized_stats(player_puuid=puuid)
+        player_summarized_stats_list.extend(player_summarized_stats)
+    logging.info(f"Transform data end: success \n length: {len(player_summarized_stats_list)}")
+
+    # Validation
+    logging.info(f"Validating data start: \n need to implement validation...")
+    validation_check = True
+    logging.info(f"Validating data end: \n success")
+
+    # Insert records into player_matches_stats
+    logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: player_summarized_stats")
+    logging.info(f"Data trying to insert sample: {player_summarized_stats_list[0:10]}")
+
+    if validation_check:
+        insert_id_list = clear_and_insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_summarized_stats',
+                                          data=player_summarized_stats_list)
+        logging.info(f"Inserting data end: success \n insert_id_list length: {len(insert_id_list)}")
+
+    logging.info(f"END SERVICE: update_player_summarized_stats")
 
 
 async def _dev_clean_unprocessed_matches():
@@ -337,7 +372,8 @@ if __name__ == "__main__":
     # asyncio.run(update_player_ids_data())
     # asyncio.run(update_match_ids_data())
     # asyncio.run(update_match_detail())
-    asyncio.run(update_player_matches_stats())
+    # asyncio.run(update_player_matches_stats())
+    asyncio.run(update_player_summarized_stats())
 
     # asyncio.run(_dev_clean_unprocessed_matches())
     # asyncio.run(_dev_clear_collection_data())
