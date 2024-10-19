@@ -221,8 +221,8 @@ async def update_match_detail():
     match_ids_to_process = [match_id for match_id in match_id_data if match_id not in processed_match_id_data]
     logging.info(f"Transforming data end: success \n length: {len(match_ids_to_process)}")
 
-    logging.info(f"Transforming data start: Truncate match_ids_to_process to 2000 (to limit execution time)")
-    match_ids_to_process = match_ids_to_process[0:2000]
+    logging.info(f"Transforming data start: Truncate match_ids_to_process to 950 (to limit execution time)")
+    match_ids_to_process = match_ids_to_process[0:500]
     logging.info(f"Transforming data end: success \n length: {len(match_ids_to_process)}")
 
     # Fetch 2
@@ -400,13 +400,13 @@ if __name__ == "__main__":
     # asyncio.run(update_league_data())
     # asyncio.run(query_recent_players())
     # asyncio.run(update_player_ids_data())
-    asyncio.run(update_game_name_taglines())
+    # asyncio.run(update_game_name_taglines())
     # asyncio.run(update_match_ids_data())
-    # asyncio.run(update_match_detail())
+    asyncio.run(update_match_detail())
     # asyncio.run(update_player_matches_stats())
     # asyncio.run(update_player_summarized_stats())
 
-    # asyncio.run(_dev_clean_unprocessed_matches())
+    asyncio.run(_dev_clean_unprocessed_matches())
     # asyncio.run(_dev_clear_collection_data())
 
 
