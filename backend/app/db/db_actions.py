@@ -2,31 +2,31 @@ from backend.app.db.db_connection import get_db
 from motor.motor_asyncio import AsyncIOMotorClient
 
 
-def insert_data(db_uri, db_name, collection_name, data):
-    db = get_db(db_uri, db_name)
+async def insert_data(db_uri, db_name, collection_name, data):
+    db = await get_db(db_uri, db_name)
     collection = db[collection_name]
 
     if isinstance(data, list):
-        result = collection.insert_many(data)
+        result = await collection.insert_many(data)
         return result.inserted_ids
     else:
-        result = collection.insert_one(data)
+        result = await collection.insert_one(data)
         return result.inserted_id
 
 
-def clear_and_insert_data(db_uri, db_name, collection_name, data):
-    db = get_db(db_uri, db_name)
+async def clear_and_insert_data(db_uri, db_name, collection_name, data):
+    db = await get_db(db_uri, db_name)
     collection = db[collection_name]
 
     # Clear previous entries
-    collection.delete_many({})
+    await collection.delete_many({})
 
     # Insert new data
     if isinstance(data, list):
-        result = collection.insert_many(data)
+        result = await collection.insert_many(data)
         return result.inserted_ids
     else:
-        result = collection.insert_one(data)
+        result = await collection.insert_one(data)
         return result.inserted_id
 
 
@@ -46,10 +46,8 @@ def clear_and_insert_data(db_uri, db_name, collection_name, data):
 #             cursor = cursor.limit(limit)
 #
 #     return list(cursor)
-async def get_data(db_uri, db_name, collection_name, filter=None, sort_field=None, limit=None, projection=None,
-                   pipeline=None):
-    client = AsyncIOMotorClient(db_uri)  # Create an instance without async with
-    db = client[db_name]
+async def get_data(db_uri, db_name, collection_name, filter=None, sort_field=None, limit=None, projection=None, pipeline=None):
+    db = await get_db(db_uri, db_name)
     collection = db[collection_name]
 
     # If a pipeline is provided, use it for aggregation
@@ -65,8 +63,6 @@ async def get_data(db_uri, db_name, collection_name, filter=None, sort_field=Non
 
     # Convert cursor to a list asynchronously
     result = await cursor.to_list(length=None)
-
-    client.close()  # Close the client after use
     return result
 
 
