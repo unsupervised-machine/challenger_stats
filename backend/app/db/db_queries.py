@@ -98,7 +98,7 @@ def get_player_puuids(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_nam
     return results
 
 
-def get_match_ids(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_id'):
+async def get_match_ids(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_id'):
     """
     get all match ids stored in database
     :param db_uri:
@@ -110,7 +110,7 @@ def get_match_ids(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='m
         "_id": 0,
         "match_id": 1,
     }
-    data = get_data(db_uri, db_name, collection_name, projection=projection)
+    data = await get_data(db_uri, db_name, collection_name, projection=projection)
     results = [item['match_id'] for item in data]
     return results
 
