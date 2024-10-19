@@ -1,12 +1,12 @@
 from fastapi import APIRouter
-from backend.app.db.db_queries import get_recent_players, get_player_puuids, get_match_ids, get_processed_match_ids, get_match_detail_ids, get_player_stats_match_details, get_player_summarized_stats
+from backend.app.db.db_queries import query_recent_players, query_player_puuids, query_match_ids, query_processed_match_ids, query_match_detail_ids, query_player_stats_match_details, query_player_summarized_stats
 import asyncio
 
 router = APIRouter()
 
 @router.get("/api/your-data")
 async def fetch_match_ids_db():
-    data = await get_match_ids()  # Fetch data from MongoDB
+    data = await query_match_ids()  # Fetch data from MongoDB
     return data
 
 # Running the async function in an event loop
