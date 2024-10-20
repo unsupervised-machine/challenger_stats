@@ -184,7 +184,7 @@ async def update_match_detail():
     logging.info(f"Transforming data end: success \n length: {len(match_ids_to_process)}")
 
     logging.info(f"Transforming data start: Truncate match_ids_to_process to 950 (to limit execution time)")
-    match_ids_to_process = match_ids_to_process[0:10000]
+    match_ids_to_process = match_ids_to_process[0:20000]
     logging.info(f"Transforming data end: success \n length: {len(match_ids_to_process)}")
 
     # Fetch 2
@@ -335,7 +335,7 @@ async def _dev_clean_unprocessed_matches():
     logging.info(f"Begin removing bad records")
 
     # THIS REMOVE RECORDS CAREFUL!!!
-    removed_records_count = remove_records(db_uri=MONGO_DB_URI,
+    removed_records_count =  await remove_records(db_uri=MONGO_DB_URI,
                                            db_name=MONGO_DB_NAME,
                                            collection_name='processed_match_id',
                                            data=not_accounted_match_id,

@@ -51,7 +51,7 @@ async def get_data(db_uri, db_name, collection_name, filter=None, sort_field=Non
 
 
 
-def clear_collection_data(db_uri, db_name, collection_name):
+async def clear_collection_data(db_uri, db_name, collection_name):
     """
     Clear all entries in a specified collection.
 
@@ -60,7 +60,7 @@ def clear_collection_data(db_uri, db_name, collection_name):
     :param collection_name: Name of the collection to clear
     :return: Result of the delete operation
     """
-    db = get_db(db_uri, db_name)
+    db = await get_db(db_uri, db_name)
     collection = db[collection_name]
 
     # Clear all entries in the collection
@@ -68,9 +68,9 @@ def clear_collection_data(db_uri, db_name, collection_name):
     return result.deleted_count  # Returns the number of documents deleted
 
 
-def remove_records(db_uri, db_name, collection_name, data, unique_id):
-    db = get_db(db_uri, db_name)
+async def remove_records(db_uri, db_name, collection_name, data, unique_id):
+    db = await get_db(db_uri, db_name)
     collection = db[collection_name]
 
-    result = collection.delete_many({unique_id: {'$in': data}})
+    result = await collection.delete_many({unique_id: {'$in': data}})
     return result.deleted_count
