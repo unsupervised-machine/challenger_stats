@@ -110,8 +110,12 @@ async def update_player_ids_data():
     logging.info(f"END SERVICE: update_player_ids_data")
 
 
-async def update_match_ids_data():
+async def update_match_ids():
     logging.info(f"START SERVICE: update_match_ids_data")
+
+    # Start the timer
+    start_time = time.time()
+
     # ~ 1 HOUR RUN TIME, with sleep time of 3 sec
 
     # Fetches
@@ -144,11 +148,16 @@ async def update_match_ids_data():
     # clear table and insert data
     logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: match_id")
     if validation_check:
-        insert_id = clear_and_insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_id',
+        insert_id = await clear_and_insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_id',
                                           data=documents)
         logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
 
+
     logging.info(f"END SERVICE: update_match_ids_data")
+    # End the timer
+    end_time = time.time()
+    total_time = end_time - start_time
+    logging.info(f"Total time taken: {total_time:.2f} seconds")
 
 
 # 10/14/2024 Execution time: update_match_detail
@@ -175,7 +184,7 @@ async def update_match_detail():
     logging.info(f"Transforming data end: success \n length: {len(match_ids_to_process)}")
 
     logging.info(f"Transforming data start: Truncate match_ids_to_process to 950 (to limit execution time)")
-    match_ids_to_process = match_ids_to_process[0:500]
+    match_ids_to_process = match_ids_to_process[0:10000]
     logging.info(f"Transforming data end: success \n length: {len(match_ids_to_process)}")
 
     # Fetch 2
@@ -367,11 +376,11 @@ if __name__ == "__main__":
     # asyncio.run(update_league_data())
     # asyncio.run(update_player_ids_data())
     # asyncio.run(update_game_name_taglines())
-    # asyncio.run(update_match_ids_data())
-    # asyncio.run(update_match_detail())
+    # asyncio.run(update_match_ids())
+    asyncio.run(update_match_detail())
     # asyncio.run(update_player_matches_stats())
     # asyncio.run(update_player_summarized_stats())
-    asyncio.run(update_ladder_data())
+    # asyncio.run(update_ladder_data())
 
     # asyncio.run(_dev_clean_unprocessed_matches())
     # asyncio.run(_dev_clear_collection_data())
