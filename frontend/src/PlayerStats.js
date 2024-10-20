@@ -1,46 +1,39 @@
-
-// temp file using to figure out how to load backend data to front end using routes... delete later
-
+// PlayerStats.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 
 const PlayerStats = () => {
-    const [playerStats, setPlayerStats] = useState(null); // Change to null to handle object directly
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true); // Loading state
+  const [playerStats, setPlayerStats] = useState([]);
 
-    useEffect(() => {
-        // Fetch player stats data from the backend API
-        const fetchPlayerStats = async () => {
-            try {
-                const response = await axios.get('http://localhost:8000/api/player-stats'); // Adjust URL based on your backend
-                setPlayerStats(response.data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false); // End loading state
-            }
-        };
+  useEffect(() => {
+    const fetchPlayerStats = async () => {
+      try {
+        const response = await fetch('http://localhost:8001/api/player-stats'); // Update this to your actual player stats route
+        const data = await response.json();
+        setPlayerStats(data);
+      } catch (error) {
+        console.error('Error fetching player stats:', error);
+      }
+    };
 
-        fetchPlayerStats();
-    }, []);
+    fetchPlayerStats();
+  }, []);
 
-    if (loading) {
-        return <p>Loading...</p>; // Display loading message
-    }
-
-    if (error) {
-        return <p>Error: {error}</p>; // Display error message
-    }
-
-    // Dump the raw data
-    return (
-        <div>
-            <h1>Player Stats</h1>
-            <pre>{JSON.stringify(playerStats, null, 2)}</pre> {/* Display raw data */}
-        </div>
-    );
+  return (
+    <div>
+      <h2>Player Stats</h2>
+      <ul>
+        {playerStats.map((player) => (
+          <li key={player._id}>
+            <strong>Kills:</strong> {player.average_kills}, 
+            <strong>Deaths:</strong> {player.average_deaths}, 
+            <strong>Assists:</strong> {player.average_assists}, 
+            <strong>Match Count:</strong> {player.match_count}, 
+            <strong>Win Rate:</strong> {(player.average_win_rate * 100).toFixed(2)}%
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 };
 
 export default PlayerStats;
-

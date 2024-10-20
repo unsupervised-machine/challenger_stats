@@ -1,13 +1,16 @@
-// src/App.js
+// App.js
 import React from 'react';
-import PlayerStats from './PlayerStats'; // Import the new component
+import TestRoute from './TestRoute';
+import PlayerStats from './PlayerStats';
 
-function App() {
-    return (
-        <div className="App">
-            <PlayerStats /> {/* Use the PlayerStats component */}
-        </div>
-    );
-}
+const App = () => {
+  return (
+    <div>
+      <TestRoute />
+      <PlayerStats />
+    </div>
+
+  );
+};
 
 export default App;
