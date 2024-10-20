@@ -207,22 +207,22 @@ async def query_player_stats_by_id(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, c
     return results
 
 
-async def compile_ladder_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='ladder_data'):
-    # fetch player_ids from db
-        # keys
-            # puuid (puuid)
-            # id (summonerId)
-        # fields
-            # profile icon id
-            # gameName
-            # tagline
-
+async def compile_ladder_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME):
     # fetch league from db
         # keys
             # summonerId (summonerId)
         # fields
             # leaguePoints
             # tier
+
+    # fetch player_ids from db
+        # keys
+            # puuid (puuid)
+            # id (summonerId)
+        # fields
+            # profileIconId
+            # gameName
+            # tagline
 
     # fetch player_summarized_stats from db
         # keys
@@ -233,3 +233,45 @@ async def compile_ladder_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collec
             # average_kills
             # average_deaths
             # average_assists
+    pipeline = [
+        # The table this pipeline will be run on is the league collection...
+        # First join: player_ids based on (summonerId)
+        {
+            '$lookup': {
+                'from': 'player_ids',
+                'localField': 'summonerId',
+                'foreignField': 'id',
+                'as': 'player_ids_data'
+            }
+        },
+        # Unwind the array to work with individual elements
+        {
+            '$unwind': {
+                'path': '$player_ids_data',
+                'preserveNullAndEmptyArrays': True  # This allows documents with no match to still appear
+            }
+        },
+        # Second join: player_ids with player_summarized_stats based on (puuid)
+        {
+            '$lookup': {
+                'from': 'player_summarized_stats',  # The third collection to join
+                'localField': 'player_ids_data.puuid',  # Field from collection2
+                'foreignField': '_id',  # Field from collection3
+                'as': 'player_summarized_stats_data'  # The output array where joined data will be stored
+            }
+        },
+        {
+            '$unwind': {
+                'path': '$player_summarized_stats_data',
+                'preserveNullAndEmptyArrays': True  # Preserve documents if no match is found
+            }
+        }
+    ]
+
+    # Run the aggregation on collection1
+    results = await get_data(db_uri=db_uri, db_name=db_name, collection_name="league", pipeline=pipeline)
+    return results
+
+
+
+
