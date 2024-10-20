@@ -1,12 +1,11 @@
 
 // temp file using to figure out how to load backend data to front end using routes... delete later
 
-// src/PlayerStats.js
 import React, { useEffect, useState } from 'react';
-import axios from 'axios'; // Optional, use Fetch API if preferred
+import axios from 'axios';
 
 const PlayerStats = () => {
-    const [playerStats, setPlayerStats] = useState([]);
+    const [playerStats, setPlayerStats] = useState(null); // Change to null to handle object directly
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true); // Loading state
 
@@ -30,19 +29,18 @@ const PlayerStats = () => {
         return <p>Loading...</p>; // Display loading message
     }
 
+    if (error) {
+        return <p>Error: {error}</p>; // Display error message
+    }
+
+    // Dump the raw data
     return (
         <div>
             <h1>Player Stats</h1>
-            {error && <p>Error: {error}</p>}
-            <ul>
-                {playerStats.map(stat => (
-                    <li key={stat._id}>
-                        {stat.summonerId}: {stat.leaguePoints} LP ({stat.tier} {stat.rank}) - {stat.wins}W {stat.losses}L
-                    </li>
-                ))}
-            </ul>
+            <pre>{JSON.stringify(playerStats, null, 2)}</pre> {/* Display raw data */}
         </div>
     );
 };
 
 export default PlayerStats;
+
