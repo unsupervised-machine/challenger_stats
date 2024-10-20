@@ -5,6 +5,10 @@ import uvicorn
 from dotenv import load_dotenv
 import os
 
+# run backend with: uvicorn backend.app.main:app --port 8000
+# exit with control+c to gracefully exit
+# if above doesn't work try: uvicorn backend.app.main:app --port 8001
+
 # Load environment variables
 load_dotenv()
 MONGO_DB_URI = os.getenv("MONGO_URI")
@@ -26,4 +30,4 @@ app.add_middleware(
 app.include_router(router)
 
 if __name__ == "__main__":
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=False)
