@@ -2,11 +2,10 @@ import time
 from datetime import datetime, timedelta
 
 from pydantic.v1 import ValidationError
-from typing_extensions import assert_never
 
 from backend.app.api.fetch_data import fetch_apex_leagues, fetch_account_ids, fetch_matches_all, fetch_match_details_all, fetch_game_name_tagline_all
 from backend.app.db.db_actions import insert_data, clear_and_insert_data, clear_collection_data, remove_records
-from backend.app.db.db_queries import query_recent_players, query_player_puuids, query_match_ids, query_processed_match_ids, query_match_detail_ids, query_player_stats_match_details, query_player_summarized_stats
+from backend.app.db.db_queries import compile_recent_players, query_player_puuids, query_match_ids, query_processed_match_ids, query_match_detail_ids, compile_player_stats_match_details, compile_player_summarized_stats
 from backend.app.api.validation import League
 from backend.app.api.transform_data import add_timestamps
 
@@ -75,21 +74,21 @@ async def update_league_data():
     logging.info(f"END SERVICE: update_league_data")
 
 # remove maybe belongs in db_queries section??
-async def query_recent_players():
-    logging.info(f"START SERVICE: query_recent_players")
-    # Fetch Data
-    logging.info(f"Database query start: get_recent_players")
-    data = query_recent_players()
-    logging.info(f"Database query end: length is {len(data)} \n Data: {data}")
-
-    logging.info(f"END SERVICE: query_recent_players")
+# async def query_recent_players():
+#     logging.info(f"START SERVICE: query_recent_players")
+#     # Fetch Data
+#     logging.info(f"Database query start: get_recent_players")
+#     data = await query_recent_players()
+#     logging.info(f"Database query end: length is {len(data)} \n Data: {data}")
+#
+#     logging.info(f"END SERVICE: query_recent_players")
 
 
 async def update_player_ids_data():
     logging.info(f"START SERVICE: update_player_ids_data")
     # Fetch Data
     logging.info(f"Fetching data start: \n get recent_player data from db query")
-    apex_league_data = query_recent_players()
+    apex_league_data = await compile_recent_players()
     logging.info(f"Fetching data end: success \n Data: {apex_league_data}")
 
     # Transform Data
@@ -131,7 +130,7 @@ async def update_game_name_taglines():
     # Fetch 1
     logging.info(f"START SERVICE: update_game_name_taglines")
     logging.info(f"Fetching data start: \n get player puuid data from db query")
-    puuid_list = query_player_puuids()
+    puuid_list = await query_player_puuids()
     logging.info(f"Fetching data end: success \n Data length: {len(puuid_list)}")
 
     # Fetch 2
@@ -151,7 +150,7 @@ async def update_game_name_taglines():
     # clear table and insert data
     logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: game_name_taglines")
     if validation_check:
-        insert_id_list = clear_and_insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='game_name_taglines',
+        insert_id_list = await clear_and_insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='game_name_taglines',
                                      data=game_name_taglines_list)
         logging.info(f"Inserting data end: success \n insert_id_list length: {len(insert_id_list)}")
 
@@ -165,7 +164,7 @@ async def update_match_ids_data():
     # (1) Get puuids data from database
     # (2) Fetch match Ids from api using puuids
     logging.info(f"Fetching data start: \n get player puuid data from db query")
-    puuid_data = query_player_puuids()
+    puuid_data = await query_player_puuids()
     logging.info(f"Fetching data end: success \n Data length: {len(puuid_data)}")
 
     match_ids_set = set()  # use a set to avoid adding duplicate match_ids
@@ -209,11 +208,11 @@ async def update_match_detail():
 
     # Fetch 1
     logging.info(f"Fetching data start: \n Get match_id data from db query")
-    match_id_data = query_match_ids()
+    match_id_data = await query_match_ids()
     logging.info(f"Fetching data end: success \n length: {len(match_id_data)}")
 
     logging.info(f"Fetching data start: \n Get processed_match_id data from db query")
-    processed_match_id_data = query_processed_match_ids()
+    processed_match_id_data = await query_processed_match_ids()
     logging.info(f"Fetching data end: success \n length: {len(processed_match_id_data)}")
 
     # Transform 2
@@ -250,7 +249,7 @@ async def update_match_detail():
     # Insertion 1
     logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: match_detail")
     if validation_check:
-        insert_id_list = insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail',
+        insert_id_list = await insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail',
                                           data=match_details_list)
         logging.info(f"Inserting data end: success \n insert_id_list length: {len(insert_id_list)}")
 
@@ -258,7 +257,7 @@ async def update_match_detail():
     # ONLY PREFORM THIS IF DATA HAS ACTUALLY BEEN INSERTED (VALIDATE THIS WITH QUERY?)
     logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: processed_match_id")
     if validation_check:
-        insert_id_list = insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='processed_match_id',
+        insert_id_list = await insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='processed_match_id',
                                           data=match_ids_to_process_list)
         logging.info(f"Inserting data end: success \n insert_id_list length: {len(insert_id_list)}")
 
@@ -279,7 +278,7 @@ async def update_player_matches_stats():
 
     # Fetch list of all players from db query
     logging.info(f"Fetching data start: \n Get puuids data from db query")
-    puuids_list = query_player_puuids()
+    puuids_list = await query_player_puuids()
     logging.info(f"puuids_list sample: {puuids_list[0:10]}")
 
     logging.info(f"Fetching data end: success \n length: {len(puuids_list)}")
@@ -289,7 +288,7 @@ async def update_player_matches_stats():
 
     # Transform Generate player matches stats from database query
     for puuid in puuids_list:
-        player_match_stats = query_player_stats_match_details(player_puuid=puuid)
+        player_match_stats = await compile_player_stats_match_details(player_puuid=puuid)
         player_match_stats_list.extend(player_match_stats)
     logging.info(f"Transform data end: success \n length: {len(player_match_stats_list)}")
 
@@ -303,7 +302,7 @@ async def update_player_matches_stats():
 
     logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: player_matches_stats")
     if validation_check:
-        insert_id_list = insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_matches_stats',
+        insert_id_list = await insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_matches_stats',
                                           data=player_match_stats_list)
         logging.info(f"Inserting data end: success \n insert_id_list length: {len(insert_id_list)}")
 
@@ -315,7 +314,7 @@ async def update_player_summarized_stats():
 
     # Fetch list of all players from db
     logging.info(f"Fetching data start: \n Get puuids data from db query")
-    puuids_list = query_player_puuids()
+    puuids_list = await query_player_puuids()
     logging.info(f"puuids_list sample: {puuids_list[0:10]}")
     logging.info(f"Fetching data end: success \n length: {len(puuids_list)}")
 
@@ -323,7 +322,7 @@ async def update_player_summarized_stats():
     logging.info(f"Transform data start: \n Generate player_summarized_stats data from db query")
     player_summarized_stats_list = []
     for puuid in puuids_list:
-        player_summarized_stats = query_player_summarized_stats(player_puuid=puuid)
+        player_summarized_stats = await compile_player_summarized_stats(player_puuid=puuid)
         player_summarized_stats_list.extend(player_summarized_stats)
     logging.info(f"Transform data end: success \n length: {len(player_summarized_stats_list)}")
 
@@ -337,7 +336,7 @@ async def update_player_summarized_stats():
     logging.info(f"Data trying to insert sample: {player_summarized_stats_list[0:10]}")
 
     if validation_check:
-        insert_id_list = clear_and_insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_summarized_stats',
+        insert_id_list = await clear_and_insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_summarized_stats',
                                           data=player_summarized_stats_list)
         logging.info(f"Inserting data end: success \n insert_id_list length: {len(insert_id_list)}")
 
@@ -346,10 +345,10 @@ async def update_player_summarized_stats():
 
 async def _dev_clean_unprocessed_matches():
     logging.info(f"START SERVICE: _dev_clean_unprocessed_matches")
-    claim = query_processed_match_ids()
+    claim = await query_processed_match_ids()
     logging.info(f"Claimed to be processed length: {len(claim)}")
 
-    actual = query_match_detail_ids()
+    actual = await query_match_detail_ids()
     logging.info(f"Actual processed length: {len(actual)}")
 
     not_accounted_match_id = list(set(claim) - set(actual))
@@ -367,10 +366,10 @@ async def _dev_clean_unprocessed_matches():
 
     logging.info(f"Removed bad records: {removed_records_count}")
 
-    new_claim = query_processed_match_ids()
+    new_claim = await query_processed_match_ids()
     logging.info(f"New claimed to be processed length: {len(new_claim)}")
 
-    new_actual = query_match_detail_ids()
+    new_actual = await query_match_detail_ids()
     logging.info(f"New actual processed length: {len(new_actual)}")
 
 

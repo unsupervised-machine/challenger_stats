@@ -8,7 +8,7 @@ MONGO_DB_URI = os.getenv("MONGO_URI")
 MONGO_DB_NAME = os.getenv("MONGO_DB_NAME")
 
 
-async def query_recent_players(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='league'):
+async def compile_recent_players(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='league'):
     """
     Retrieve recent player entries from the 'league' MongoDB collection for specific tiers.
 
@@ -39,7 +39,7 @@ async def query_recent_players(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, colle
 
     Example:
     --------
-    >>> players = query_recent_players()
+    >>> players = compile_recent_players()
     >>> print(players)
     [{'tier': 'challenger', 'entry': {...}}, {'tier': 'grandmaster', 'entry': {...}}, ...]
     """
@@ -154,8 +154,8 @@ async def query_match_detail_ids(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, col
     return results
 
 
-async def query_match_detail_from_puuid(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail',
-                                        player_puuid=None):
+async def compile_match_detail_from_puuid(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail',
+                                          player_puuid=None):
     """
     return list of tuples of all match details which contain specified player, along with the participant index of the player in the match, and the matchId
     :param db_uri:
@@ -165,29 +165,46 @@ async def query_match_detail_from_puuid(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NA
     :return:
     """
 
-    filter = {
-        "metadata.participants": player_puuid
-    }
+    pipeline = [
+        {
+            "$match": {
+                "metadata.participants": player_puuid
+            }
+        },
+        {
+            "$addFields": {
+                "playerIndex": {
+                    "$indexOfArray": ["$metadata.participants", player_puuid]
+                }
+            }
+        },
+        {
+            "$sort": {
+                "info.gameEndTimestamp": -1  # Sort by gameEndTimestamp in descending order
+            }
+        },
+        {
+            "$project": {
+                "matchId": "$metadata.matchId",
+                "playerIndex": "$playerIndex",
+                "record": "$$ROOT"  # Keep the entire record if needed
+            }
+        }
+    ]
 
-    matching_records = await get_data(db_uri, db_name, collection_name, filter=filter)
+    matching_records = await get_data(db_uri, db_name, collection_name, pipeline=pipeline)
 
-    player_record_tuples = []
-
-    for record in matching_records:
-        participants = record['metadata']['participants']
-        match_id = record['metadata']['matchId']
-        if player_puuid in participants:
-            index = participants.index(player_puuid)
-            player_record_tuples.append((match_id, index, record))
+    # Transform the result into the desired format
+    player_record_tuples = [(record['matchId'], record['playerIndex'], record['record']) for record in matching_records]
 
     return player_record_tuples
 
 
-async def query_player_stats_match_details(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail',
-                                           player_puuid=None):
+async def compile_player_stats_match_details(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail',
+                                             player_puuid=None):
 
     # list of tuples [(player_index, match_details)]
-    match_id_index_record_list = await query_match_detail_from_puuid(db_uri, db_name, collection_name, player_puuid=player_puuid)
+    match_id_index_record_list = await compile_match_detail_from_puuid(db_uri, db_name, collection_name, player_puuid=player_puuid)
 
     # List to store player stats
     player_stats_list = []
@@ -218,8 +235,8 @@ async def query_player_stats_match_details(db_uri=MONGO_DB_URI, db_name=MONGO_DB
 
 
 
-async def query_player_summarized_stats(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_matches_stats',
-                                        player_puuid=None):
+async def compile_player_summarized_stats(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_matches_stats',
+                                          player_puuid=None):
     pipeline = [
         {"$match": {"puuid": player_puuid}},
         {
@@ -247,4 +264,15 @@ async def query_player_summarized_stats(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NA
     return result
 
 
+async def query_player_stats_all(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_summarized_stats'):
+    results = await get_data(db_uri, db_name, collection_name)
+    return results
 
+
+async def query_player_stats_by_id(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_summarized_stats',
+                             player_puuid=None):
+    filter = {
+        "_id": player_puuid
+    }
+    results = await get_data(db_uri, db_name, collection_name, filter=filter)
+    return results
