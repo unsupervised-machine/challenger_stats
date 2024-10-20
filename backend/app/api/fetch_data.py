@@ -91,25 +91,30 @@ async def fetch_master_leagues(queue="RANKED_SOLO_5x5", region="na1", api_key=AP
         return response.json()
 
 
-async def fetch_apex_leagues(apex_rank=None, queue="RANKED_SOLO_5x5", region="na1", api_key=API_KEY):
+async def fetch_apex_leagues(queue="RANKED_SOLO_5x5", region="na1", api_key=API_KEY):
     """
     Fetches data from one of the apex leagues (Challenger, Grandmaster, or Master)
-    based on the provided apex_rank parameter.
-
-    :param apex_rank: The rank to fetch data for. Should be one of 'challenger', 'grandmaster', or 'master'.
-    :param queue: The queue type (default is "RANKED_SOLO_5x5").
-    :param region: The region to fetch data from (default is "na1").
-    :param api_key: The API key to authenticate the request.
-    :return: The JSON response of the requested league data.
+    ?? consider limiting the output to top 1700 players??
     """
-    if apex_rank == "challenger":
-        return await fetch_challenger_leagues(queue=queue, region=region, api_key=api_key)
-    elif apex_rank == "grandmaster":
-        return await fetch_grandmaster_leagues(queue=queue, region=region, api_key=api_key)
-    elif apex_rank == "master":
-        return await fetch_master_leagues(queue=queue, region=region, api_key=api_key)
-    else:
-        raise ValueError(f"Invalid apex_rank '{apex_rank}'. Must be one of 'challenger', 'grandmaster', or 'master'.")
+
+    challenger_league = await fetch_challenger_leagues(queue=queue, region=region, api_key=api_key)
+    grandmaster_league = await fetch_grandmaster_leagues(queue=queue, region=region, api_key=api_key)
+    master_league = await fetch_master_leagues(queue=queue, region=region, api_key=api_key)
+
+    leagues = [challenger_league, grandmaster_league, master_league]
+
+    combined_ladder = []
+
+    for league in leagues:
+        tier = league.get("tier")
+        for entry in league.get("entries", []):
+            entry["tier"] = tier
+            combined_ladder.append(entry)
+
+    sorted_entries = sorted(combined_ladder, key=lambda x: x["leaguePoints"], reverse=True)
+
+    return sorted_entries
+
 
 
 async def fetch_account_ids(region="na1", summoner_id=None, api_key=API_KEY):

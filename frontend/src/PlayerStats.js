@@ -24,6 +24,7 @@ const PlayerStats = () => {
       <ul>
         {playerStats.map((player) => (
           <li key={player._id}>
+            <strong>puuid:</strong> {player._id},
             <strong>Kills:</strong> {player.average_kills}, 
             <strong>Deaths:</strong> {player.average_deaths}, 
             <strong>Assists:</strong> {player.average_assists}, 

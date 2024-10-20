@@ -47,41 +47,27 @@ async def update_league_data():
     logging.info(f"START SERVICE: update_league_data")
     # Fetch Data
     logging.info(f"Fetching data start: master league from NA")
-    data = await fetch_apex_leagues(apex_rank='master')
-    logging.info(f"Fetching data end: success \n Data: {data}")
+    ladder_data = await fetch_apex_leagues()
+    logging.info(f"Fetching data end: success \n Data length: {len(ladder_data)}")
 
     # Transform Data
-    logging.info(f"Transforming data start: \n Transformations applied: add_timestamps")
-    data = add_timestamps(data=data, field='added_at')
-    logging.info(f"Transforming data end: success \n Data: {data}")
+    # logging.info(f"Transforming data start: \n Transformations applied: add_timestamps")
+    # data = add_timestamps(data=data, field='added_at')
+    # logging.info(f"Transforming data end: success \n Data: {data}")
 
     # Validate Data
-    logging.info(f"Validating data start: pydantic model League")
-    try:
-        league_data  = League(**data)
-        # league_data  = League(**data, added_at=datetime.now())
-        validated_data = league_data.model_dump()
-        logging.info(f"Validating data end: success \n Validated data: {validated_data}")
-    except ValidationError as e:
-        logging.info(f"Validation failed: {e}")
-        return
+    logging.info(f"Validating data start: \n need to implement validation...")
+    # need to implement this with pydantic...
+    validation_check = True
+    logging.info(f"Validating data end: \n success")
 
     # Insert Data
-    logging.info(f"Inserting data start: database {MONGO_DB_NAME}, collection league")
-    insert_id = insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='league', data=validated_data)
-    logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
+    if validation_check:
+        logging.info(f"Inserting data start: database {MONGO_DB_NAME}, collection league")
+        insert_id = await clear_and_insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='league', data=ladder_data)
+        logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
 
     logging.info(f"END SERVICE: update_league_data")
-
-# remove maybe belongs in db_queries section??
-# async def query_recent_players():
-#     logging.info(f"START SERVICE: query_recent_players")
-#     # Fetch Data
-#     logging.info(f"Database query start: get_recent_players")
-#     data = await query_recent_players()
-#     logging.info(f"Database query end: length is {len(data)} \n Data: {data}")
-#
-#     logging.info(f"END SERVICE: query_recent_players")
 
 
 async def update_player_ids_data():
@@ -396,16 +382,16 @@ async def _dev_clear_collection_data(collection_name="sample"):
 
 if __name__ == "__main__":
     import asyncio
-    # asyncio.run(update_league_data())
+    asyncio.run(update_league_data())
     # asyncio.run(query_recent_players())
     # asyncio.run(update_player_ids_data())
     # asyncio.run(update_game_name_taglines())
     # asyncio.run(update_match_ids_data())
-    asyncio.run(update_match_detail())
+    # asyncio.run(update_match_detail())
     # asyncio.run(update_player_matches_stats())
     # asyncio.run(update_player_summarized_stats())
 
-    asyncio.run(_dev_clean_unprocessed_matches())
+    # asyncio.run(_dev_clean_unprocessed_matches())
     # asyncio.run(_dev_clear_collection_data())
 
 
