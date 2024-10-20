@@ -3,9 +3,9 @@ from datetime import datetime, timedelta
 
 from pydantic.v1 import ValidationError
 
-from backend.app.api.fetch_data import fetch_apex_leagues, fetch_account_ids, fetch_matches_all, fetch_match_details_all, fetch_game_name_tagline_all
+from backend.app.api.fetch_data import fetch_apex_leagues, fetch_account_ids, fetch_matches_all, fetch_match_details_all, fetch_game_name_tagline_all, fetch_game_name_tagline
 from backend.app.db.db_actions import insert_data, clear_and_insert_data, clear_collection_data, remove_records
-from backend.app.db.db_queries import compile_recent_players, query_player_puuids, query_match_ids, query_processed_match_ids, query_match_detail_ids, compile_player_stats_match_details, compile_player_summarized_stats
+from backend.app.db.db_queries import query_ladder_players, query_player_puuids, query_match_ids, query_processed_match_ids, query_match_detail_ids, compile_player_stats_match_details, compile_player_summarized_stats, query_player_ids
 from backend.app.api.validation import League
 from backend.app.api.transform_data import add_timestamps
 
@@ -50,11 +50,6 @@ async def update_league_data():
     ladder_data = await fetch_apex_leagues()
     logging.info(f"Fetching data end: success \n Data length: {len(ladder_data)}")
 
-    # Transform Data
-    # logging.info(f"Transforming data start: \n Transformations applied: add_timestamps")
-    # data = add_timestamps(data=data, field='added_at')
-    # logging.info(f"Transforming data end: success \n Data: {data}")
-
     # Validate Data
     logging.info(f"Validating data start: \n need to implement validation...")
     # need to implement this with pydantic...
@@ -72,30 +67,32 @@ async def update_league_data():
 
 async def update_player_ids_data():
     logging.info(f"START SERVICE: update_player_ids_data")
-    # Fetch Data
+    # Fetch players from ladder (only id is summonerId)
     logging.info(f"Fetching data start: \n get recent_player data from db query")
-    apex_league_data = await compile_recent_players()
-    logging.info(f"Fetching data end: success \n Data: {apex_league_data}")
+    new_player_ids = await query_ladder_players()
+    logging.info(f"Fetching data end: success \n Data: {new_player_ids[0:10]}")
+
+    # Fetch players ids already stored in the database (also contains summonerId)
+    logging.info(f"Fetching data start: \n get recent_player data from db query")
+    stored_player_ids = await query_player_ids()
+    logging.info(f"Fetching data end: success \n Data sample: {stored_player_ids[0:10]}")
 
     # Transform Data
-    logging.info(f"Transforming data start: \n Transformations applied: fetch additional ids from api for each summonerId")
-    summoner_ids = [item['summonerId'] for item in apex_league_data]
+    # Create sets of summonerIds from both lists
+    new_player_ids_set = {d['summonerId'] for d in new_player_ids}
+    stored_ids_set = {d['summonerId'] for d in stored_player_ids}
+    # Find summonerIds unique to new_players_ids
+    ids_to_fetch_and_store = new_player_ids_set - stored_ids_set
 
+    # Fetch other ids (including puuid) along with game name and tagline
+    ids_to_store = []
+    for summoner_id in ids_to_fetch_and_store:
+        account_ids = await fetch_account_ids(summoner_id=summoner_id)
+        puuid = account_ids['puuid']
+        name_and_tag_line = await fetch_game_name_tagline(puuid=puuid)
+        combined_dict = {**account_ids, **name_and_tag_line}
+        ids_to_store.append(combined_dict)
 
-    player_ids = []
-    for summoner_id in summoner_ids:
-        account_data = await fetch_account_ids(summoner_id=summoner_id)  # Awaiting the async function
-        player_ids.append({
-            "summonerId": account_data["id"],
-            "accountId": account_data["accountId"],
-            "puuid": account_data["puuid"],
-            "profileIconId": account_data["profileIconId"],
-            "revisionDate": account_data["revisionDate"],
-            "summonerLevel": account_data["summonerLevel"],
-        })
-        await asyncio.sleep(1.25)
-
-    logging.info(f"Transforming data end: \n Data: {player_ids}")
 
     # Validate Data
     logging.info(f"Validating data start: \n need to implement validation...")
@@ -105,9 +102,10 @@ async def update_player_ids_data():
 
     # Insert Data
     logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: player_ids")
+    logging.info(f"Sample of data trying to insert: {ids_to_store[0:10]}")
     if validation_check:
-        insert_id = clear_and_insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_ids', data=player_ids)
-        logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
+        insert_id = await insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_ids', data=ids_to_store)
+        logging.info(f"Inserting data end: success \n insert_id length: {len(insert_id)}")
 
     logging.info(f"END SERVICE: update_player_ids_data")
 
@@ -382,9 +380,8 @@ async def _dev_clear_collection_data(collection_name="sample"):
 
 if __name__ == "__main__":
     import asyncio
-    asyncio.run(update_league_data())
-    # asyncio.run(query_recent_players())
-    # asyncio.run(update_player_ids_data())
+    # asyncio.run(update_league_data())
+    asyncio.run(update_player_ids_data())
     # asyncio.run(update_game_name_taglines())
     # asyncio.run(update_match_ids_data())
     # asyncio.run(update_match_detail())

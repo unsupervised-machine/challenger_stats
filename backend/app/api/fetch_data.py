@@ -123,18 +123,28 @@ async def fetch_account_ids(region="na1", summoner_id=None, api_key=API_KEY):
 
     url = f"https://{region}.api.riotgames.com/lol/summoner/v4/summoners/{summoner_id}?api_key={api_key}"
 
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url)
-        response.raise_for_status()
-        return response.json()
+    async def api_call():
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url)
+            response.raise_for_status()  # Raise an error for bad responses
+            return response.json()
+
+    return await backoff_api_call(api_call)
 
 
 async def fetch_game_name_tagline(region="americas", puuid=None, api_key=API_KEY):
+    if not puuid:
+        raise ValueError("Puuid cannot be blank.")
+
     url = f"https://{region}.api.riotgames.com/riot/account/v1/accounts/by-puuid/{puuid}?api_key={api_key}"
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url)
-        response.raise_for_status()
-        return response.json()
+
+    async def api_call():
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url)
+            response.raise_for_status()  # Raise an error for bad responses
+            return response.json()
+
+    return await backoff_api_call(api_call)
 
 async def fetch_game_name_tagline_all(region="americas", puuid_list=None, api_key=API_KEY):
     if not puuid_list:
