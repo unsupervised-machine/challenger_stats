@@ -1,30 +1,29 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.app.routes import router as data_router
+from backend.app.routes import router
 import uvicorn
+from dotenv import load_dotenv
+import os
 
+# Load environment variables
+load_dotenv()
+MONGO_DB_URI = os.getenv("MONGO_URI")
+MONGO_DB_NAME = os.getenv("MONGO_DB_NAME")
 
-# to start app use following command from project directory (challenger_stats dir): uvicorn backend.app.main:app --reload
-
+# Create FastAPI app
 app = FastAPI()
 
-
-# Enable CORS for your frontend application
+# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace with your frontend URL in production
+    allow_origins=["*"],  # You can specify a list of allowed origins (for example, ["http://localhost:3000"])
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
 )
 
 # Register API routes
-app.include_router(data_router)
-
-@app.get("/")
-async def read_root():
-    return {"message": "Welcome to the Player Stats API!"}
-
+app.include_router(router)
 
 if __name__ == "__main__":
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)

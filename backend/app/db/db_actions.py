@@ -30,22 +30,6 @@ async def clear_and_insert_data(db_uri, db_name, collection_name, data):
         return result.inserted_id
 
 
-# def get_data(db_uri, db_name, collection_name, filter=None, sort_field=None, limit=None, projection=None, pipeline=None):
-#     db = get_db(db_uri, db_name)
-#     collection = db[collection_name]
-#
-#     # If a pipeline is provided, use it for aggregation
-#     if pipeline:
-#         cursor = collection.aggregate(pipeline)
-#     else:
-#         # Apply the filter, sort, and limit if specified
-#         cursor = collection.find(filter, projection)
-#         if sort_field:
-#             cursor = cursor.sort(*sort_field)
-#         if limit:
-#             cursor = cursor.limit(limit)
-#
-#     return list(cursor)
 async def get_data(db_uri, db_name, collection_name, filter=None, sort_field=None, limit=None, projection=None, pipeline=None):
     db = await get_db(db_uri, db_name)
     collection = db[collection_name]

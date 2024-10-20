@@ -4,6 +4,7 @@ import asyncio
 import logging
 
 
+
 # Configure logging
 logging.basicConfig(
     filename="routes.log",  # Log file name
@@ -13,6 +14,16 @@ logging.basicConfig(
 )
 
 router = APIRouter()
+
+@router.get("/api/test")
+async def test_route():
+    data = {"message": "Hello, this is a test route!"}
+    return data
+
+@router.get("/api/test2")
+async def test_route_2():
+    data = {"message": "Hello, this is a test route!"}
+    return data
 
 @router.get("/api/player-stats")
 async def get_player_stats_all_db():
@@ -38,6 +49,6 @@ async def get_player_match_history_db(player_puuid: str):
 # Running the async function in an event loop
 if __name__ == "__main__":
     sample_puuid = "RzdoQhmL8pdy8Oj8MweL584sMtP6pdn5TwcXpeq-9OnGeOmUrFaWc8NECbYF_kG4C0aQg-PjSxCuyQ"
-    # results = asyncio.run(get_player_stats_all_db())
-    # results = asyncio.run(get_player_stats_db(player_puuid=sample_puuid))
-    results = asyncio.run(get_player_match_history_db(player_puuid=sample_puuid))
+    results = asyncio.run(get_player_stats_all_db())
+    # results = asyncio.run(get_player_match_history_db(player_puuid=sample_puuid))
+    print(results[0:1])
