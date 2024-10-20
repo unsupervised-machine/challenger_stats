@@ -5,7 +5,7 @@ from pydantic.v1 import ValidationError
 
 from backend.app.api.fetch_data import fetch_apex_leagues, fetch_account_ids, fetch_matches_all, fetch_match_details_all, fetch_game_name_tagline_all, fetch_game_name_tagline
 from backend.app.db.db_actions import insert_data, clear_and_insert_data, clear_collection_data, remove_records
-from backend.app.db.db_queries import query_ladder_players, query_player_puuids, query_match_ids, query_processed_match_ids, query_match_detail_ids, compile_player_stats_match_details, compile_player_summarized_stats, query_player_ids
+from backend.app.db.db_queries import query_ladder_players, query_puuids, query_match_ids, query_processed_match_ids, query_match_detail_ids, compile_player_stats_match_details, compile_player_summarized_stats, query_player_ids
 from backend.app.api.validation import League
 from backend.app.api.transform_data import add_timestamps
 
@@ -110,36 +110,6 @@ async def update_player_ids_data():
     logging.info(f"END SERVICE: update_player_ids_data")
 
 
-async def update_game_name_taglines():
-    # Fetch 1
-    logging.info(f"START SERVICE: update_game_name_taglines")
-    logging.info(f"Fetching data start: \n get player puuid data from db query")
-    puuid_list = await query_player_puuids()
-    logging.info(f"Fetching data end: success \n Data length: {len(puuid_list)}")
-
-    # Fetch 2
-    logging.info(f"Fetching data start: \n get game name and tagline data from api call")
-    game_name_taglines_list = await fetch_game_name_tagline_all(puuid_list=puuid_list)
-    logging.info(f"Fetching data end: success \n Data length: {len(game_name_taglines_list)}")
-    logging.info(f"Fetching data end: success \n Data sample: {game_name_taglines_list[0:10]}")
-
-    # Validation
-    # validate data before insertion
-    logging.info(f"Validating data start: \n need to implement validation...")
-    # need to implement this with pydantic...
-    validation_check = True
-    logging.info(f"Validating data end: \n success")
-
-    # Insertion
-    # clear table and insert data
-    logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: game_name_taglines")
-    if validation_check:
-        insert_id_list = await clear_and_insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='game_name_taglines',
-                                     data=game_name_taglines_list)
-        logging.info(f"Inserting data end: success \n insert_id_list length: {len(insert_id_list)}")
-
-    logging.info(f"END SERVICE: update_match_ids_data")
-
 async def update_match_ids_data():
     logging.info(f"START SERVICE: update_match_ids_data")
     # ~ 1 HOUR RUN TIME, with sleep time of 3 sec
@@ -148,7 +118,7 @@ async def update_match_ids_data():
     # (1) Get puuids data from database
     # (2) Fetch match Ids from api using puuids
     logging.info(f"Fetching data start: \n get player puuid data from db query")
-    puuid_data = await query_player_puuids()
+    puuid_data = await query_puuids()
     logging.info(f"Fetching data end: success \n Data length: {len(puuid_data)}")
 
     match_ids_set = set()  # use a set to avoid adding duplicate match_ids
@@ -262,7 +232,7 @@ async def update_player_matches_stats():
 
     # Fetch list of all players from db query
     logging.info(f"Fetching data start: \n Get puuids data from db query")
-    puuids_list = await query_player_puuids()
+    puuids_list = await query_puuids()
     logging.info(f"puuids_list sample: {puuids_list[0:10]}")
 
     logging.info(f"Fetching data end: success \n length: {len(puuids_list)}")
@@ -298,7 +268,7 @@ async def update_player_summarized_stats():
 
     # Fetch list of all players from db
     logging.info(f"Fetching data start: \n Get puuids data from db query")
-    puuids_list = await query_player_puuids()
+    puuids_list = await query_puuids()
     logging.info(f"puuids_list sample: {puuids_list[0:10]}")
     logging.info(f"Fetching data end: success \n length: {len(puuids_list)}")
 

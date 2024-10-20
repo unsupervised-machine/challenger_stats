@@ -17,7 +17,7 @@ async def query_player_ids(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collectio
     player_ids = await get_data(db_uri=db_uri, db_name=db_name, collection_name=collection_name)
     return player_ids
 
-async def query_player_puuids(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_ids'):
+async def query_puuids(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_ids'):
     projection = {
         "_id": 0,
         "puuid": 1  # include summonerId in query return (exclude fields not set to 0)
