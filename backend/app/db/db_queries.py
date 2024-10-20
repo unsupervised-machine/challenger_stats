@@ -205,3 +205,31 @@ async def query_player_stats_by_id(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, c
     }
     results = await get_data(db_uri, db_name, collection_name, filter=filter)
     return results
+
+
+async def compile_ladder_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='ladder_data'):
+    # fetch player_ids from db
+        # keys
+            # puuid (puuid)
+            # id (summonerId)
+        # fields
+            # profile icon id
+            # gameName
+            # tagline
+
+    # fetch league from db
+        # keys
+            # summonerId (summonerId)
+        # fields
+            # leaguePoints
+            # tier
+
+    # fetch player_summarized_stats from db
+        # keys
+            # id (puuid)
+        # fields
+            # match_count
+            # win rate
+            # average_kills
+            # average_deaths
+            # average_assists
