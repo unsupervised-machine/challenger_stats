@@ -279,3 +279,5 @@ async def fetch_match_details_all(region="americas", match_id_list=None, api_key
     return match_details_all_list
 
 
+async def fetch_profile_icons_dd():
+    # TODO

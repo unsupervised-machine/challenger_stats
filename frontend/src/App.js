@@ -2,6 +2,7 @@
 import React from 'react';
 import TestRoute from './TestRoute';
 import PlayerStats from './PlayerStats';
+import LadderComponentSkeleton from "./LadderComponentSkeleton";
 import LadderComponent from "./LadderComponent";
 
 // run front end with npm start --prefix frontend
@@ -12,6 +13,7 @@ const App = () => {
   return (
     <div>
       <TestRoute />
+      {/*<LadderComponentSkeleton />*/}
       <LadderComponent />
       {/*<PlayerStats />*/}
     </div>

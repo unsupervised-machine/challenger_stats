@@ -159,3 +159,87 @@
 2024-10-20 17:45:13 - INFO - returned data sample: [{'_id': ObjectId('6714916c88a0b1c98cf9f073'), 'summonerId': 'FeNzqi6KmJT7TNaPgXIK0nmH7wYAfwfk0kSp9l1LdLfpBfVTEF6Z9mksnQ', 'leaguePoints': 1314, 'rank': 'I', 'wins': 114, 'losses': 57, 'veteran': False, 'inactive': False, 'freshBlood': False, 'hotStreak': False, 'tier': 'CHALLENGER', 'player_ids_data': {'_id': ObjectId('6714b6690ca3b17a9a7afcc4'), 'id': 'FeNzqi6KmJT7TNaPgXIK0nmH7wYAfwfk0kSp9l1LdLfpBfVTEF6Z9mksnQ', 'accountId': 'WURsoTHj2uAeiE5IFgGCwG2gtJ3t5wz7b4bbFY10MdyztYzLWzpJ2l0F', 'puuid': 'zn1JhY51h46Em3p6a4b13m-S8krnh37-nA2PE7vuEhijojMf3N8l3X_pyx-lvHGfTjsbhCpn6YZh_w', 'profileIconId': 3494, 'revisionDate': 1729401176986, 'summonerLevel': 108, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'_id': 'zn1JhY51h46Em3p6a4b13m-S8krnh37-nA2PE7vuEhijojMf3N8l3X_pyx-lvHGfTjsbhCpn6YZh_w', 'average_kills': 7.338028169014085, 'average_deaths': 4.929577464788732, 'average_assists': 4.316901408450704, 'match_count': 142, 'average_win_rate': 0.6549295774647887}}]
 2024-10-20 17:45:13 - INFO - returned data length: 1625
 2024-10-20 17:45:13 - INFO - END ROUTE: /api/ladder
+2024-10-20 17:45:49 - INFO - START ROUTE: /api/ladder
+2024-10-20 17:45:49 - INFO - START ROUTE: /api/ladder
+2024-10-20 17:45:49 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 17:45:49 - INFO - returned data length: 1625
+2024-10-20 17:45:49 - INFO - END ROUTE: /api/ladder
+2024-10-20 17:45:49 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 17:45:49 - INFO - returned data length: 1625
+2024-10-20 17:45:49 - INFO - END ROUTE: /api/ladder
+2024-10-20 17:48:19 - INFO - START ROUTE: /api/ladder
+2024-10-20 17:48:19 - INFO - START ROUTE: /api/ladder
+2024-10-20 17:48:19 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 17:48:19 - INFO - returned data length: 1625
+2024-10-20 17:48:19 - INFO - END ROUTE: /api/ladder
+2024-10-20 17:48:19 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 17:48:19 - INFO - returned data length: 1625
+2024-10-20 17:48:19 - INFO - END ROUTE: /api/ladder
+2024-10-20 17:48:20 - INFO - START ROUTE: /api/ladder
+2024-10-20 17:48:20 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 17:48:20 - INFO - returned data length: 1625
+2024-10-20 17:48:20 - INFO - END ROUTE: /api/ladder
+2024-10-20 18:10:59 - INFO - START ROUTE: /api/ladder
+2024-10-20 18:10:59 - INFO - START ROUTE: /api/ladder
+2024-10-20 18:10:59 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 18:10:59 - INFO - returned data length: 1625
+2024-10-20 18:10:59 - INFO - END ROUTE: /api/ladder
+2024-10-20 18:10:59 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 18:10:59 - INFO - returned data length: 1625
+2024-10-20 18:10:59 - INFO - END ROUTE: /api/ladder
+2024-10-20 18:10:59 - INFO - START ROUTE: /api/ladder
+2024-10-20 18:10:59 - INFO - START ROUTE: /api/ladder
+2024-10-20 18:10:59 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 18:10:59 - INFO - returned data length: 1625
+2024-10-20 18:10:59 - INFO - END ROUTE: /api/ladder
+2024-10-20 18:10:59 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 18:10:59 - INFO - returned data length: 1625
+2024-10-20 18:10:59 - INFO - END ROUTE: /api/ladder
+2024-10-20 18:16:22 - INFO - START ROUTE: /api/ladder
+2024-10-20 18:16:23 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 18:16:23 - INFO - returned data length: 1625
+2024-10-20 18:16:23 - INFO - END ROUTE: /api/ladder
+2024-10-20 18:16:23 - INFO - START ROUTE: /api/ladder
+2024-10-20 18:16:23 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 18:16:23 - INFO - returned data length: 1625
+2024-10-20 18:16:23 - INFO - END ROUTE: /api/ladder
+2024-10-20 18:17:53 - INFO - START ROUTE: /api/ladder
+2024-10-20 18:17:53 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 18:17:53 - INFO - returned data length: 1625
+2024-10-20 18:17:53 - INFO - END ROUTE: /api/ladder
+2024-10-20 18:18:13 - INFO - START ROUTE: /api/ladder
+2024-10-20 18:18:13 - INFO - START ROUTE: /api/ladder
+2024-10-20 18:18:13 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 18:18:13 - INFO - returned data length: 1625
+2024-10-20 18:18:13 - INFO - END ROUTE: /api/ladder
+2024-10-20 18:18:13 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 18:18:13 - INFO - returned data length: 1625
+2024-10-20 18:18:13 - INFO - END ROUTE: /api/ladder
+2024-10-20 18:18:24 - INFO - START ROUTE: /api/ladder
+2024-10-20 18:18:25 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 18:18:25 - INFO - returned data length: 1625
+2024-10-20 18:18:25 - INFO - END ROUTE: /api/ladder
+2024-10-20 18:18:36 - INFO - START ROUTE: /api/ladder
+2024-10-20 18:18:36 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 18:18:36 - INFO - returned data length: 1625
+2024-10-20 18:18:36 - INFO - END ROUTE: /api/ladder
+2024-10-20 18:18:36 - INFO - START ROUTE: /api/ladder
+2024-10-20 18:18:36 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 18:18:36 - INFO - returned data length: 1625
+2024-10-20 18:18:36 - INFO - END ROUTE: /api/ladder
+2024-10-20 18:22:27 - INFO - START ROUTE: /api/ladder
+2024-10-20 18:22:27 - INFO - START ROUTE: /api/ladder
+2024-10-20 18:22:27 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 18:22:27 - INFO - returned data length: 1625
+2024-10-20 18:22:27 - INFO - END ROUTE: /api/ladder
+2024-10-20 18:22:27 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 18:22:27 - INFO - returned data length: 1625
+2024-10-20 18:22:27 - INFO - END ROUTE: /api/ladder
+2024-10-20 18:22:56 - INFO - START ROUTE: /api/ladder
+2024-10-20 18:22:56 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 18:22:56 - INFO - returned data length: 1625
+2024-10-20 18:22:56 - INFO - END ROUTE: /api/ladder
+2024-10-20 18:22:56 - INFO - START ROUTE: /api/ladder
+2024-10-20 18:22:56 - INFO - returned data sample: [{'leaguePoints': 1314, 'tier': 'CHALLENGER', 'player_ids_data': {'profileIconId': 3494, 'gameName': 'divine maple', 'tagLine': 'goat'}, 'player_summarized_stats_data': {'average_win_rate': 0.6549295774647887}}]
+2024-10-20 18:22:56 - INFO - returned data length: 1625
+2024-10-20 18:22:56 - INFO - END ROUTE: /api/ladder
