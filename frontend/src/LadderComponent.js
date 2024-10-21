@@ -45,6 +45,8 @@ const LadderComponent = () => {
     return <div className="error">Error: {error}</div>;
   }
 
+  const backupProfileIcon = 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/profileicon/15.png'; // Replace with your default image URL
+
   return (
     <div className="ladder-container">
       <h2>Player Ladder</h2>
@@ -59,6 +61,9 @@ const LadderComponent = () => {
               alt="Player Icon"
               className="player-icon"
               effect="blur"
+              onError={(e) => {
+                e.target.src = backupProfileIcon; // Use default image if there's an error loading the icon
+              }}
             />
             <div className="player-info">
               <strong>Player Name:</strong> {player.player_ids_data.gameName}#{player.player_ids_data.tagLine}
