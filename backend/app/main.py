@@ -17,6 +17,14 @@ MONGO_DB_NAME = os.getenv("MONGO_DB_NAME")
 # Create FastAPI app
 app = FastAPI()
 
+
+# Allow CORS for specified origins
+origins = [
+    "http://localhost:3000",  # Your frontend URL
+    "http://localhost:8001",  # Add this if you need to access from another localhost server
+    # Add other origins if needed
+]
+
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,

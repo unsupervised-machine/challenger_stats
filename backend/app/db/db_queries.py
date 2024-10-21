@@ -207,7 +207,7 @@ async def query_player_stats_by_id(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, c
     return results
 
 
-async def compile_ladder_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME):
+async def compile_ladder(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME):
     # fetch league from db
         # keys
             # summonerId (summonerId)
@@ -273,5 +273,17 @@ async def compile_ladder_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME):
     return results
 
 
+async def query_ladder_component(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='ladder'):
+    projection = {
+        "_id": 0,
+        "tier":1,
+        "leaguePoints": 1,
+        "player_summarized_stats_data.average_win_rate": 1,
+        "player_ids_data.profileIconId": 1,
+        "player_ids_data.gameName": 1,
+        "player_ids_data.tagLine": 1
+    }
 
-
+    # should be sorted when we query it
+    results = await get_data(db_uri, db_name, collection_name, projection=projection)
+    return results

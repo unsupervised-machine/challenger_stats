@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from backend.app.db.db_queries import query_player_stats_all, query_player_stats_by_id, compile_match_detail_from_puuid
+from backend.app.db.db_queries import query_player_stats_all, query_player_stats_by_id, compile_match_detail_from_puuid, query_ladder_component
 import asyncio
 import logging
 
@@ -44,6 +44,15 @@ async def get_player_match_history_db(player_puuid: str):
     logging.info(f"END ROUTE: /api/player-match-history{player_puuid}")
     return data
 
+
+@router.get("/api/ladder")
+async def get_ladder_db():
+    logging.info(f"START ROUTE: /api/ladder")
+    data = await query_ladder_component()
+    logging.info(f"returned data sample: {data[0:1]}")
+    logging.info(f"returned data length: {len(data)}")
+    logging.info(f"END ROUTE: /api/ladder")
+    return data
 
 
 # Running the async function in an event loop
