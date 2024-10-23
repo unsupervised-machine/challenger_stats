@@ -236,8 +236,8 @@ async def update_match_detail():
     logging.info(f"END SERVICE: update_match_detail | Duration: {time_difference:.2f} seconds")
 
 
-async def update_player_matches_stats():
-    logging.info(f"START SERVICE: update_player_matches_stats")
+async def update_player_match_history():
+    logging.info(f"START SERVICE: update_player_match_history")
 
     # Fetch list of all players from db query
     logging.info(f"Fetching data start: \n Get puuids data from db query")
@@ -246,14 +246,14 @@ async def update_player_matches_stats():
 
     logging.info(f"Fetching data end: success \n length: {len(puuids_list)}")
 
-    logging.info(f"Transform data start: \n Generate player_match_stats data from db query")
-    player_match_stats_list = []
+    logging.info(f"Transform data start: \n Generate player_match_history data from db query")
+    players_match_history_list = []
 
     # Transform Generate player matches stats from database query
     for puuid in puuids_list:
-        player_match_stats = await compile_player_match_history(player_puuid=puuid)
-        player_match_stats_list.extend(player_match_stats)
-    logging.info(f"Transform data end: success \n length: {len(player_match_stats_list)}")
+        player_match_history = await compile_player_match_history(player_puuid=puuid)
+        players_match_history_list.extend(player_match_history)
+    logging.info(f"Transform data end: success \n length: {len(players_match_history_list)}")
 
     # Validation
     logging.info(f"Validating data start: \n need to implement validation...")
@@ -261,12 +261,12 @@ async def update_player_matches_stats():
     logging.info(f"Validating data end: \n success")
 
     # Insert records into player_matches_stats
-    logging.info(f"Data trying to insert: {player_match_stats_list[0:10]}")
+    logging.info(f"Data trying to insert: {players_match_history_list[0:10]}")
 
     logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: player_matches_stats")
     if validation_check:
-        insert_id_list = await insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_matches_stats',
-                                          data=player_match_stats_list)
+        insert_id_list = await insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_match_history',
+                                          data=players_match_history_list)
         logging.info(f"Inserting data end: success \n insert_id_list length: {len(insert_id_list)}")
 
     logging.info(f"END SERVICE: update_player_matches_stats")
@@ -391,7 +391,7 @@ if __name__ == "__main__":
     # asyncio.run(update_game_name_taglines())
     # asyncio.run(update_match_ids())
     # asyncio.run(update_match_detail())
-    # asyncio.run(update_player_matches_stats())
+    # asyncio.run(update_player_match_history())
     # asyncio.run(update_player_summarized_stats())
     # asyncio.run(update_ladder_data())
 
@@ -400,5 +400,5 @@ if __name__ == "__main__":
     # asyncio.run(_dev_clear_collection_data())
 
     # TEST SERVICES
-    asyncio.run(test_compile_player_match_history())
+    # asyncio.run(test_compile_player_match_history())
 

@@ -146,7 +146,7 @@ async def extract_match_stats_from_match_details(match_details):
 async def extract_player_stats_from_match_details(player_index, match_details):
     player_stats = {
         # NOT DISPLAYED
-        "playerIndex": player_index,
+        "playerIndex": str(player_index),
         "puuid": match_details['info']['participants'][player_index]['puuid'],
         "teamPosition": match_details['info']['participants'][player_index]['teamPosition'],
         "win": match_details['info']['participants'][player_index]['win'],
@@ -174,7 +174,7 @@ async def extract_team_stats_from_match_details(match_details):
     team_stats = {}
     for player_index in range(10):
         player_data = await extract_player_stats_from_match_details(player_index, match_details)
-        team_stats[player_index] = player_data
+        team_stats[str(player_index)] = player_data
     return team_stats
 
 
@@ -186,7 +186,7 @@ async def compile_player_match_history(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAM
     match_id_index_record_list = await compile_match_detail_from_puuid(db_uri, db_name, collection_name, player_puuid=player_puuid)
 
     # List to store player stats
-    player_stats_list = []
+    player_match_history = []
 
     for match_id, player_index, match_details in match_id_index_record_list:
         try:
@@ -199,12 +199,12 @@ async def compile_player_match_history(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAM
 
 
             # Append stats as a tuple
-            player_stats_list.append(combined_dict)
+            player_match_history.append(combined_dict)
 
         except (KeyError, IndexError) as e:
             print(f"Error extracting data for player index {player_index} in match {match_id}: {e}")
 
-    return player_stats_list
+    return player_match_history
 
 
 
