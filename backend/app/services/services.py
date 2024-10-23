@@ -373,15 +373,6 @@ async def _dev_clear_collection_data(collection_name="sample"):
 
 
 
-async def test_compile_player_match_history(player_puuid="yS6ERuhWvkNQI2Kakf3auHXHZ4Pqy5Sr6EuCKhK8MplQSEz1H5DE0vtHMmzcvsmbvncX5-_1SVu__w"):
-    logging.info(f"START SERVICE: test_compile_player_match_history")
-    logging.info(f"player_puuid: {player_puuid}")
-    player_match_stats = await compile_player_match_history(player_puuid=player_puuid)
-    logging.info(f"player_match_stats sample: {player_match_stats[0:1]}")
-    logging.info(f"player_match_stats: {player_match_stats}")
-    logging.info(f"player_match_stats length: {len(player_match_stats)}")
-    logging.info(f"END SERVICE: test_compile_player_match_history")
-
 
 if __name__ == "__main__":
     import asyncio
@@ -392,7 +383,7 @@ if __name__ == "__main__":
     # asyncio.run(update_match_ids())
     # asyncio.run(update_match_detail())
     # asyncio.run(update_player_match_history())
-    # asyncio.run(update_player_summarized_stats())
+    asyncio.run(update_player_summarized_stats())
     # asyncio.run(update_ladder_data())
 
     # DEV SERVICES
@@ -400,5 +391,4 @@ if __name__ == "__main__":
     # asyncio.run(_dev_clear_collection_data())
 
     # TEST SERVICES
-    # asyncio.run(test_compile_player_match_history())
 
