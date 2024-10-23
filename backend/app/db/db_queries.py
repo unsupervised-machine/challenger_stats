@@ -1,5 +1,8 @@
+import datetime
+
 from backend.app.db.db_actions import get_data
 from dotenv import load_dotenv
+from datetime import datetime, timedelta
 import os
 
 
@@ -128,9 +131,56 @@ async def compile_match_detail_from_puuid(db_uri=MONGO_DB_URI, db_name=MONGO_DB_
 
     return player_record_tuples
 
+# Helper functions used with match details
+async def extract_match_stats_from_match_details(match_details):
+    match_stats = {
+        "matchId": match_details['metadata']['matchId'],
+        "gameMode": match_details['info']['gameMode'],
+        "matchDate": datetime.fromtimestamp(match_details['info']['gameEndTimestamp'] / 1000).isoformat(),
+        "matchDuration": timedelta(seconds=match_details['info']['gameDuration'])
+    }
 
-async def compile_player_stats_match_details(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail',
-                                             player_puuid=None):
+    return match_stats
+
+
+async def extract_player_stats_from_match_details(player_index, match_details):
+    player_stats = {
+        # NOT DISPLAYED
+        "playerIndex": player_index,
+        "puuid": match_details['info']['participants'][player_index]['puuid'],
+        "teamPosition": match_details['info']['participants'][player_index]['teamPosition'],
+        "win": match_details['info']['participants'][player_index]['win'],
+        "championName": match_details['info']['participants'][player_index]['championName'],
+        # DISPLAYED
+        "summonerName": match_details['info']['participants'][player_index]['summonerName'],
+        "championId": match_details['info']['participants'][player_index]['championId'],
+        "summoner1Id": match_details['info']['participants'][player_index]['summoner1Id'],
+        "summoner2Id": match_details['info']['participants'][player_index]['summoner2Id'],
+        "item0": match_details['info']['participants'][player_index]['item0'],
+        "item1": match_details['info']['participants'][player_index]['item1'],
+        "item2": match_details['info']['participants'][player_index]['item2'],
+        "item3": match_details['info']['participants'][player_index]['item3'],
+        "item4": match_details['info']['participants'][player_index]['item4'],
+        "item5": match_details['info']['participants'][player_index]['item5'],
+        "item6": match_details['info']['participants'][player_index]['item6'],
+        "kills": match_details['info']['participants'][player_index]['kills'],
+        "deaths": match_details['info']['participants'][player_index]['deaths'],
+        "assists": match_details['info']['participants'][player_index]['assists'],
+        "totalMinionsKilled": match_details['info']['participants'][player_index]['totalMinionsKilled']
+    }
+    return player_stats
+
+async def extract_team_stats_from_match_details(match_details):
+    team_stats = {}
+    for player_index in range(10):
+        player_data = await extract_player_stats_from_match_details(player_index, match_details)
+        team_stats[player_index] = player_data
+    return team_stats
+
+
+
+async def compile_player_match_history(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='match_detail',
+                                       player_puuid=None):
 
     # list of tuples [(player_index, match_details)]
     match_id_index_record_list = await compile_match_detail_from_puuid(db_uri, db_name, collection_name, player_puuid=player_puuid)
@@ -140,22 +190,16 @@ async def compile_player_stats_match_details(db_uri=MONGO_DB_URI, db_name=MONGO_
 
     for match_id, player_index, match_details in match_id_index_record_list:
         try:
-            participant_data = match_details['info']['participants'][player_index]
-            player_stats = {
-                "match_id": match_id,
-                "player_index": player_index,
-                "puuid": participant_data['puuid'],
-                "kills": participant_data['kills'],
-                "deaths": participant_data['deaths'],
-                "assists": participant_data['assists'],
-                "champion_name": participant_data['championName'],
-                "champion_id": participant_data['championId'],
-                "team_position": participant_data['teamPosition'],
-                "win": participant_data['win']
-            }
+
+            match_stats = await extract_match_stats_from_match_details(match_details)
+            player_stats = await extract_player_stats_from_match_details(player_index, match_details)
+            team_stats = await extract_team_stats_from_match_details(match_details)
+
+            combined_dict = {**match_stats, **player_stats, **team_stats}
+
 
             # Append stats as a tuple
-            player_stats_list.append(player_stats)
+            player_stats_list.append(combined_dict)
 
         except (KeyError, IndexError) as e:
             print(f"Error extracting data for player index {player_index} in match {match_id}: {e}")
@@ -174,6 +218,7 @@ async def compile_player_summarized_stats(db_uri=MONGO_DB_URI, db_name=MONGO_DB_
                 "average_kills": {"$avg": "$kills"},
                 "average_deaths": {"$avg": "$deaths"},
                 "average_assists": {"$avg": "$assists"},
+                "average_cs": {"$avg": "$totalMinionsKilled"},
                 "match_count": {"$sum": 1},
                 "average_win_rate": {
                     "$avg": {

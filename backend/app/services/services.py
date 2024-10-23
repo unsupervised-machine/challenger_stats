@@ -5,7 +5,7 @@ from pydantic.v1 import ValidationError
 
 from backend.app.api.fetch_data import fetch_apex_leagues, fetch_account_ids, fetch_matches_all, fetch_match_details_all, fetch_game_name_tagline
 from backend.app.db.db_actions import insert_data, clear_and_insert_data, clear_collection_data, remove_records
-from backend.app.db.db_queries import query_ladder_players, query_puuids, query_match_ids, query_processed_match_ids, query_match_detail_ids, compile_player_stats_match_details, compile_player_summarized_stats, query_player_ids, compile_ladder, query_ladder_component
+from backend.app.db.db_queries import query_ladder_players, query_puuids, query_match_ids, query_processed_match_ids, query_match_detail_ids, compile_player_match_history, compile_player_summarized_stats, query_player_ids, compile_ladder, query_ladder_component
 from backend.app.api.validation import League
 from backend.app.api.transform_data import add_timestamps
 
@@ -251,7 +251,7 @@ async def update_player_matches_stats():
 
     # Transform Generate player matches stats from database query
     for puuid in puuids_list:
-        player_match_stats = await compile_player_stats_match_details(player_puuid=puuid)
+        player_match_stats = await compile_player_match_history(player_puuid=puuid)
         player_match_stats_list.extend(player_match_stats)
     logging.info(f"Transform data end: success \n length: {len(player_match_stats_list)}")
 
@@ -371,18 +371,33 @@ async def _dev_clear_collection_data(collection_name="sample"):
 
     logging.info(f"END SERVICE: _dev_clear_collection_data")
 
+
+
+async def test_compile_player_match_history(player_puuid="yS6ERuhWvkNQI2Kakf3auHXHZ4Pqy5Sr6EuCKhK8MplQSEz1H5DE0vtHMmzcvsmbvncX5-_1SVu__w"):
+    logging.info(f"START SERVICE: test_compile_player_match_history")
+    logging.info(f"player_puuid: {player_puuid}")
+    player_match_stats = await compile_player_match_history(player_puuid=player_puuid)
+    logging.info(f"player_match_stats: {player_match_stats}")
+    logging.info(f"player_match_stats length: {len(player_match_stats)}")
+    logging.info(f"END SERVICE: test_compile_player_match_history")
+
+
 if __name__ == "__main__":
     import asyncio
+    # STANDARD SERVICES
     # asyncio.run(update_league_data())
     # asyncio.run(update_player_ids_data())
     # asyncio.run(update_game_name_taglines())
     # asyncio.run(update_match_ids())
-    asyncio.run(update_match_detail())
+    # asyncio.run(update_match_detail())
     # asyncio.run(update_player_matches_stats())
     # asyncio.run(update_player_summarized_stats())
     # asyncio.run(update_ladder_data())
 
+    # DEV SERVICES
     # asyncio.run(_dev_clean_unprocessed_matches())
     # asyncio.run(_dev_clear_collection_data())
 
+    # TEST SERVICES
+    asyncio.run(test_compile_player_match_history())
 
