@@ -137,7 +137,7 @@ async def extract_match_stats_from_match_details(match_details):
         "matchId": match_details['metadata']['matchId'],
         "gameMode": match_details['info']['gameMode'],
         "matchDate": datetime.fromtimestamp(match_details['info']['gameEndTimestamp'] / 1000).isoformat(),
-        "matchDuration": timedelta(seconds=match_details['info']['gameDuration'])
+        "matchDuration": str(timedelta(seconds=match_details['info']['gameDuration']))
     }
 
     return match_stats

@@ -377,6 +377,7 @@ async def test_compile_player_match_history(player_puuid="yS6ERuhWvkNQI2Kakf3auH
     logging.info(f"START SERVICE: test_compile_player_match_history")
     logging.info(f"player_puuid: {player_puuid}")
     player_match_stats = await compile_player_match_history(player_puuid=player_puuid)
+    logging.info(f"player_match_stats sample: {player_match_stats[0:1]}")
     logging.info(f"player_match_stats: {player_match_stats}")
     logging.info(f"player_match_stats length: {len(player_match_stats)}")
     logging.info(f"END SERVICE: test_compile_player_match_history")
