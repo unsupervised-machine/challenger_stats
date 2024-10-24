@@ -314,8 +314,7 @@ async def fetch_item_icons_ids():
         print(icon_url)
 
         # Define the filename for the icon
-        sanitized_item_name = re.sub(r'[<>:"/\\|?*]', '_', item_name)  # Replace invalid characters
-        icon_filename = f"item_{item_id}_{sanitized_item_name}.png"  # Create a unique filename
+        icon_filename = f"{item_id}.png"  # Create a unique filename using only the item ID
         icon_path_to_save = icons_directory / icon_filename  # Construct the full save path
 
         # Use httpx to download the icon

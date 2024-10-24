@@ -68,12 +68,32 @@ const Match = ({ match }) => {
       <div style={{flex: 1}}>
         <h4>Items</h4>
         <p>Item 0 ID: {item0}</p>
+        <img src={`/icons/items/${item0}.png`} alt={`Item ${item0}`}
+             style={{width: '50px', height: '50px'}}/>
+
         <p>Item 1 ID: {item1}</p>
+        <img src={`/icons/items/${item1}.png`} alt={`Item ${item1}`}
+             style={{width: '50px', height: '50px'}}/>
+
         <p>Item 2 ID: {item2}</p>
+        <img src={`/icons/items/${item2}.png`} alt={`Item ${item2}`}
+             style={{width: '50px', height: '50px'}}/>
+
         <p>Item 3 ID: {item3}</p>
+        <img src={`/icons/items/${item3}.png`} alt={`Item ${item3}`}
+             style={{width: '50px', height: '50px'}}/>
+
         <p>Item 4 ID: {item4}</p>
+        <img src={`/icons/items/${item4}.png`} alt={`Item ${item4}`}
+             style={{width: '50px', height: '50px'}}/>
+
         <p>Item 5 ID: {item5}</p>
+        <img src={`/icons/items/${item5}.png`} alt={`Item ${item5}`}
+             style={{width: '50px', height: '50px'}}/>
+
         <p>Item 6 ID: {item6}</p>
+        <img src={`/icons/items/${item6}.png`} alt={`Item ${item6}`}
+             style={{width: '50px', height: '50px'}}/>
       </div>
     </div>
   );
