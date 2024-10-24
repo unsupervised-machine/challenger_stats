@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8000'; // Adjust this to your FastAPI server address
+const API_BASE_URL = 'http://localhost:8001'; // Adjust this to your FastAPI server address
 
 export const getPlayerMatchHistory = async (playerPuuid) => {
   try {

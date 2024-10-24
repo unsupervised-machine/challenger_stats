@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getPlayerMatchHistory } from '../services/apiService';
+import { getPlayerMatchHistory } from './apiService';
 import Match from './Match';
 
 const PlayerMatchHistory = ({ playerPuuid }) => {
