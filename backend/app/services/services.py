@@ -5,7 +5,7 @@ from pydantic.v1 import ValidationError
 
 from backend.app.api.fetch_data import fetch_apex_leagues, fetch_account_ids, fetch_matches_all, fetch_match_details_all, fetch_game_name_tagline
 from backend.app.db.db_actions import insert_data, clear_and_insert_data, clear_collection_data, remove_records
-from backend.app.db.db_queries import query_ladder_players, query_puuids, query_match_ids, query_processed_match_ids, query_match_detail_ids, compile_player_match_history, compile_player_summarized_stats, query_player_ids, compile_ladder, query_ladder_component
+from backend.app.db.db_queries import query_ladder_players, query_puuids, query_match_ids, query_processed_match_ids, query_match_detail_ids, compile_player_match_history, compile_player_summarized_stats, query_player_ids, compile_ladder, query_ladder_component, query_puuid_match_history
 from backend.app.api.validation import League
 from backend.app.api.transform_data import add_timestamps
 
@@ -373,6 +373,16 @@ async def _dev_clear_collection_data(collection_name="sample"):
 
 
 
+async def test_query_puuid_match_history(puuid="cQ5qRo8B2jc9xnlYr0eE0DnhuGiyWpTppU_VHPGVSRBKrT_EVEUFrZTKCofZciCG5y1rDIVZUMuFJA"):
+    logging.info(f"START SERVICE: test_query_puuid_match_history")
+    data = await query_puuid_match_history(player_puuid=puuid)
+    logging.info(f"puuid queried: {puuid}")
+    logging.info(f"data sample: {data[0:10]}")
+    logging.info(f"data length: {len(data)}")
+    logging.info(f"END SERVICE: test_query_puuid_match_history")
+
+
+
 
 if __name__ == "__main__":
     import asyncio
@@ -383,7 +393,7 @@ if __name__ == "__main__":
     # asyncio.run(update_match_ids())
     # asyncio.run(update_match_detail())
     # asyncio.run(update_player_match_history())
-    asyncio.run(update_player_summarized_stats())
+    # asyncio.run(update_player_summarized_stats())
     # asyncio.run(update_ladder_data())
 
     # DEV SERVICES
@@ -391,4 +401,5 @@ if __name__ == "__main__":
     # asyncio.run(_dev_clear_collection_data())
 
     # TEST SERVICES
+    asyncio.run(test_query_puuid_match_history())
 

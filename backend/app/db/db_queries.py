@@ -207,6 +207,31 @@ async def compile_player_match_history(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAM
     return player_match_history
 
 
+async def query_puuid_match_history(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_match_history',
+                                       player_puuid=None):
+    pipeline = [
+        {
+            "$match": {
+                "puuid": player_puuid
+            }
+        },
+        {
+            "$sort": {
+                "matchDate": 1
+            }
+        },
+        {
+            "$project": {
+                "_id": 0
+            }
+        }
+    ]
+
+    result = await get_data(db_uri=db_uri, db_name=db_name, collection_name=collection_name, pipeline=pipeline)
+
+    return result
+
+
 
 async def compile_player_summarized_stats(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_match_history',
                                           player_puuid=None):
