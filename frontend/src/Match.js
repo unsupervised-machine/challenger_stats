@@ -32,6 +32,9 @@ const Match = ({ match }) => {
   // Convert the 'win' boolean to a readable outcome
   const outcome = win ? 'Win' : 'Loss';
 
+  const placeholderImg = '/icons/items/9168.png'
+
+
   return (
     <div className="match" style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', borderBottom: '1px solid #ddd' }}>
       {/* Column1: Basic match information */}
@@ -57,43 +60,66 @@ const Match = ({ match }) => {
         <p>CS: {totalMinionsKilled}</p>
       </div>
 
-      {/* Center column: Summoner information */}
+      {/* Column3: Summoner information */}
       <div style={{ flex: 1 }}>
         <h4>Summoner Spells</h4>
         <p>Summoner Spell 1 ID: {summoner1Id}</p>
         <p>Summoner Spell 2 ID: {summoner2Id}</p>
       </div>
 
-      {/* Right column: Items */}
+      {/* Column4: Items */}
+
       <div style={{flex: 1}}>
         <h4>Items</h4>
-        <p>Item 0 ID: {item0}</p>
-        <img src={`/icons/items/${item0}.png`} alt={`Item ${item0}`}
-             style={{width: '50px', height: '50px'}}/>
 
-        {/*<p>Item 1 ID: {item1}</p>*/}
-        <img src={`/icons/items/${item1}.png`} alt={`Item ${item1}`}
-             style={{width: '50px', height: '50px'}}/>
+        {/* Item 0 */}
+        <img
+            src={item0 !== 0 ? `/icons/items/${item0}.png` : placeholderImg}
+            alt={item0 !== 0 ? `Item ${item0}` : 'Placeholder Item'}
+            style={{width: '50px', height: '50px'}}
+        />
 
-        {/*<p>Item 2 ID: {item2}</p>*/}
-        <img src={`/icons/items/${item2}.png`} alt={`Item ${item2}`}
-             style={{width: '50px', height: '50px'}}/>
+        {/* Item 1 */}
+        <img
+            src={item1 !== 0 ? `/icons/items/${item1}.png` : placeholderImg}
+            alt={item1 !== 0 ? `Item ${item1}` : 'Placeholder Item'}
+            style={{width: '50px', height: '50px'}}
+        />
 
-        {/*<p>Item 3 ID: {item3}</p>*/}
-        <img src={`/icons/items/${item3}.png`} alt={`Item ${item3}`}
-             style={{width: '50px', height: '50px'}}/>
+        {/* Item 2 */}
+        <img
+            src={item2 !== 0 ? `/icons/items/${item2}.png` : placeholderImg}
+            alt={item2 !== 0 ? `Item ${item2}` : 'Placeholder Item'}
+            style={{width: '50px', height: '50px'}}
+        />
 
-        {/*<p>Item 4 ID: {item4}</p>*/}
-        <img src={`/icons/items/${item4}.png`} alt={`Item ${item4}`}
-             style={{width: '50px', height: '50px'}}/>
+        {/* Item 3 */}
+        <img
+            src={item3 !== 0 ? `/icons/items/${item3}.png` : placeholderImg}
+            alt={item3 !== 0 ? `Item ${item3}` : 'Placeholder Item'}
+            style={{width: '50px', height: '50px'}}
+        />
 
-        {/*<p>Item 5 ID: {item5}</p>*/}
-        <img src={`/icons/items/${item5}.png`} alt={`Item ${item5}`}
-             style={{width: '50px', height: '50px'}}/>
+        {/* Item 4 */}
+        <img
+            src={item4 !== 0 ? `/icons/items/${item4}.png` : placeholderImg}
+            alt={item4 !== 0 ? `Item ${item4}` : 'Placeholder Item'}
+            style={{width: '50px', height: '50px'}}
+        />
 
-        {/*<p>Item 6 ID: {item6}</p>*/}
-        <img src={`/icons/items/${item6}.png`} alt={`Item ${item6}`}
-             style={{width: '50px', height: '50px'}}/>
+        {/* Item 5 */}
+        <img
+            src={item5 !== 0 ? `/icons/items/${item5}.png` : placeholderImg}
+            alt={item5 !== 0 ? `Item ${item5}` : 'Placeholder Item'}
+            style={{width: '50px', height: '50px'}}
+        />
+
+        {/* Item 6 */}
+        <img
+            src={item6 !== 0 ? `/icons/items/${item6}.png` : placeholderImg}
+            alt={item6 !== 0 ? `Item ${item6}` : 'Placeholder Item'}
+            style={{width: '50px', height: '50px'}}
+        />
       </div>
     </div>
   );
