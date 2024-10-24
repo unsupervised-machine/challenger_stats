@@ -25,6 +25,11 @@ async def test_route_2():
     data = {"message": "Hello, this is a test route!"}
     return data
 
+@router.get("/api/test/{testNum}")
+async def test_route_3(testNum: int):
+    data = {"message": f"Hello, {testNum} this is a test route!"}
+    return data
+
 @router.get("/api/player-stats")
 async def get_player_stats_all_db():
     data = await query_player_stats_all()  # Fetch data from MongoDB

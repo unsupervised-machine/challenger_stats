@@ -1,6 +1,7 @@
 // App.js
 import React from 'react';
 import TestRoute from './TestRoute';
+import TestRoute3 from './TestRoute3';
 import LadderComponentSkeleton from "./LadderComponentSkeleton";
 import LadderComponent from "./LadderComponent";
 import PlayerMatchHistory from "./PlayerMatchHistory";
@@ -14,9 +15,10 @@ const App = () => {
   return (
     <div>
       <TestRoute />
+      <TestRoute3 />
       {/*<LadderComponentSkeleton />*/}
       {/*<LadderComponent />*/}
-      <PlayerMatchHistory playerPuuid={playerPuuid} />
+      {/*<PlayerMatchHistory playerPuuid={playerPuuid} />*/}
     </div>
 
   );
