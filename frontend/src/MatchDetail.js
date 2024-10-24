@@ -10,13 +10,14 @@ const MatchDetail = ({ match }) => {
   // Use Object.keys to iterate over match properties from '0' to '9'
   return (
     <div style={{ border: '1px solid #ddd', padding: '10px', marginTop: '10px' }}>
-      <h3>Match Details for Match ID: {matchId}</h3>
+      <h3>Expanded Match Details for Match ID: {matchId}</h3>
       {Array.from({ length: 10 }, (_, index) => {
         const matchDetail = match[index];
         if (matchDetail) {
           return (
               <div key={index}>
                   <h4>Details for Player {index}:</h4>
+                  <>Player PUUID: {matchDetail.puuid}</>
                   <p>Player Name: {matchDetail.riotIdGameName}</p>
                   <p>Player Tagline: {matchDetail.riotIdTagline}</p>
                   <p>Index: {index}</p>

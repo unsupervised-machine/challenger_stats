@@ -21,6 +21,8 @@ const Match = ({ match }) => {
     item4,
     item5,
     item6,
+    riotIdGameName,
+    riotIdTagline
   } = match;
 
   // Format matchDate or set to 'Unknown date' if invalid
@@ -37,13 +39,15 @@ const Match = ({ match }) => {
         <p>Game Mode: {gameMode}</p>
         <p>Match ID: {matchId || 'Unknown Match ID'}</p>
         <p>PUUID: {puuid}</p>
+        <p>Player Name: {riotIdGameName}</p>
+        <p>Player Tagline: {riotIdTagline}</p>
         <p>Date: {formattedMatchDate}</p>
         <p>Duration: {matchDuration ? `${matchDuration}` : 'Unknown duration'}</p>
         <p>Outcome: {outcome || 'Outcome not available'}</p>
       </div>
 
       {/* Column2: Player Performance*/}
-      <div style={{ flex: 1 }}>
+      <div style={{flex: 1}}>
         <h3>Player Performance</h3>
         <p>Kills: {kills}</p>
         <p>Deaths: {deaths}</p>
