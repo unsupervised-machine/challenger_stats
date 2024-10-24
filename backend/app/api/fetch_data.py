@@ -2,6 +2,8 @@ import os
 import httpx
 from dotenv import load_dotenv
 import asyncio
+import re
+from pathlib import Path
 
 
 # ===============================
@@ -279,6 +281,59 @@ async def fetch_match_details_all(region="americas", match_id_list=None, api_key
     return match_details_all_list
 
 
-async def fetch_profile_icons_dd():
-    # TODO
-    pass
+async def fetch_item_icons_ids():
+    # Base URL for CommunityDragon assets
+    base_url = "https://raw.communitydragon.org/latest/game/assets/items/icons2d/"
+    items_url = "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/items.json"
+
+    # Use httpx to fetch the item metadata
+    async with httpx.AsyncClient() as client:
+        response = await client.get(items_url)
+        items = response.json()
+
+    # Create the directory to save icons if it doesn't exist
+    project_root = os.path.dirname(os.path.abspath(__file__))  # Get the directory of the current script
+    icons_directory = os.path.join(project_root, '..', '..', '..', 'frontend', 'public', 'icons', 'items')  # Navigate to the desired directory
+    os.makedirs(icons_directory, exist_ok=True)
+    full_icons_directory = os.path.abspath(icons_directory)
+    print(f"Icons will be saved in: {full_icons_directory}")
+
+
+    # Download each item icon and store it in the specified directory
+    for item in items:
+        item_id = item.get("id")
+        item_name = item.get("name").replace(" ", "_")  # Replace spaces with underscores for filenames
+
+        prefix = "/lol-game-data/assets/ASSETS/Items/Icons2D/"
+        icon_path = item.get("iconPath")
+        # truncate icon_path
+        if icon_path.startswith(prefix):
+            icon_path = icon_path[len(prefix):]
+
+        # Construct the full URL for the icon
+        icon_url = f"{base_url}{icon_path.lstrip('/')}".lower()
+        print(icon_url)
+
+        # Define the filename for the icon
+        sanitized_item_name = re.sub(r'[<>:"/\\|?*]', '_', item_name)  # Replace invalid characters
+        icon_filename = f"item_{item_id}_{sanitized_item_name}.png"  # Create a unique filename
+        icon_path_to_save = os.path.join(icons_directory, icon_filename)
+
+        # Use httpx to download the icon
+        async with httpx.AsyncClient() as client:
+            icon_response = await client.get(icon_url)
+
+            if icon_response.status_code == 200:
+                # Check if the file already exists
+                if os.path.exists(icon_path_to_save):
+                    print(f"{icon_filename} already exists. Skipping download.")
+                    continue  # Skip to the next item if the file exists
+
+                # Save the icon to the specified directory
+                with open(icon_path_to_save, 'wb') as icon_file:
+                    icon_file.write(icon_response.content)
+                print(f"Saved {icon_filename} to {icons_directory}")
+            else:
+                print(f"Failed to download {icon_filename}: {icon_response.status_code}")
+
+

@@ -22,7 +22,7 @@ const MatchDetail = ({ match }) => {
                   <p>Player Tagline: {matchDetail.riotIdTagline}</p>
                   <p>Index: {index}</p>
                   {/* Champion */}
-                  <p>Champion ID: {matchDetail.championId ?? 'N/A'}</p>
+                  <p>Champion Name: {matchDetail.championName ?? 'N/A'}</p>
 
                   {/* Items*/}
                   <p>Item 0: {matchDetail.item0 ?? 'N/A'}</p>
