@@ -23,8 +23,8 @@ const TestRoute = () => {
 
   return (
     <div>
-      <h1>Test Route Message</h1>
-      <p>{message}</p>
+      <h1>Test Route Message 3</h1>
+      <p>Message: {message}</p>
     </div>
   );
 };
