@@ -292,12 +292,11 @@ async def fetch_item_icons_ids():
         items = response.json()
 
     # Create the directory to save icons if it doesn't exist
-    project_root = os.path.dirname(os.path.abspath(__file__))  # Get the directory of the current script
-    icons_directory = os.path.join(project_root, '..', '..', '..', 'frontend', 'public', 'icons', 'items')  # Navigate to the desired directory
-    os.makedirs(icons_directory, exist_ok=True)
-    full_icons_directory = os.path.abspath(icons_directory)
-    print(f"Icons will be saved in: {full_icons_directory}")
+    project_root = Path(__file__).resolve().parent  # Get the directory of the current script
+    icons_directory = project_root / '..' / '..' / '..' / 'frontend' / 'public' / 'icons' / 'items'  # Navigate to the desired directory
+    icons_directory.mkdir(parents=True, exist_ok=True)  # Create the directory if it doesn't exist
 
+    print(f"Icons will be saved in: {icons_directory.resolve()}")  # Print the full path of the directory
 
     # Download each item icon and store it in the specified directory
     for item in items:
@@ -306,7 +305,7 @@ async def fetch_item_icons_ids():
 
         prefix = "/lol-game-data/assets/ASSETS/Items/Icons2D/"
         icon_path = item.get("iconPath")
-        # truncate icon_path
+        # Truncate icon_path
         if icon_path.startswith(prefix):
             icon_path = icon_path[len(prefix):]
 
@@ -317,7 +316,7 @@ async def fetch_item_icons_ids():
         # Define the filename for the icon
         sanitized_item_name = re.sub(r'[<>:"/\\|?*]', '_', item_name)  # Replace invalid characters
         icon_filename = f"item_{item_id}_{sanitized_item_name}.png"  # Create a unique filename
-        icon_path_to_save = os.path.join(icons_directory, icon_filename)
+        icon_path_to_save = icons_directory / icon_filename  # Construct the full save path
 
         # Use httpx to download the icon
         async with httpx.AsyncClient() as client:
@@ -325,7 +324,7 @@ async def fetch_item_icons_ids():
 
             if icon_response.status_code == 200:
                 # Check if the file already exists
-                if os.path.exists(icon_path_to_save):
+                if icon_path_to_save.exists():
                     print(f"{icon_filename} already exists. Skipping download.")
                     continue  # Skip to the next item if the file exists
 
