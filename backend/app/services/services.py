@@ -5,7 +5,7 @@ from pydantic.v1 import ValidationError
 
 from backend.app.api.fetch_data import fetch_apex_leagues, fetch_account_ids, fetch_matches_all, fetch_match_details_all, fetch_game_name_tagline
 from backend.app.db.db_actions import insert_data, clear_and_insert_data, clear_collection_data, remove_records
-from backend.app.db.db_queries import query_ladder_players, query_puuids, query_match_ids, query_processed_match_ids, query_match_detail_ids, compile_player_match_history, compile_player_summarized_stats, query_player_ids, compile_ladder, query_ladder_component, query_puuid_match_history
+from backend.app.db.db_queries import query_ladder_players, query_puuids, query_match_ids, query_processed_match_ids, query_match_detail_ids, compile_player_match_history, compile_player_summarized_stats, query_player_ids, compile_ladder
 from backend.app.api.validation import League
 from backend.app.api.transform_data import add_timestamps
 

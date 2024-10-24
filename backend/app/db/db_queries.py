@@ -152,7 +152,9 @@ async def extract_player_stats_from_match_details(player_index, match_details):
         "win": match_details['info']['participants'][player_index]['win'],
         "championName": match_details['info']['participants'][player_index]['championName'],
         # DISPLAYED
-        "summonerName": match_details['info']['participants'][player_index]['summonerName'],
+        # "summonerName": match_details['info']['participants'][player_index]['summonerName'],
+        "riotIdGameName": match_details['info']['participants'][player_index]['riotIdGameName'],
+        "riotIdTagline": match_details['info']['participants'][player_index]['riotIdTagline'],
         "championId": match_details['info']['participants'][player_index]['championId'],
         "summoner1Id": match_details['info']['participants'][player_index]['summoner1Id'],
         "summoner2Id": match_details['info']['participants'][player_index]['summoner2Id'],
