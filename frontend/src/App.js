@@ -15,10 +15,10 @@ const App = () => {
   return (
     <div>
       <TestRoute />
-      <TestRoute3 />
+      {/*<TestRoute3 />*/}
       {/*<LadderComponentSkeleton />*/}
       {/*<LadderComponent />*/}
-      {/*<PlayerMatchHistory playerPuuid={playerPuuid} />*/}
+      <PlayerMatchHistory playerPuuid={playerPuuid} />
     </div>
 
   );

@@ -40,7 +40,7 @@ async def get_player_stats_db(player_puuid: str):
     data = await query_player_stats_by_id(player_puuid=player_puuid)  # Fetch data from MongoDB
     return data
 
-@router.get("/api/player-match-history{player_puuid}")
+@router.get("/api/player-match-history/{player_puuid}")
 async def get_player_match_history_db(player_puuid: str):
     logging.info(f"START ROUTE: /api/player-match-history{player_puuid}")
     data = await query_puuid_match_history(player_puuid=player_puuid)
