@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from backend.app.db.db_queries import query_player_stats_all, query_player_stats_by_id, compile_match_detail_from_puuid, query_ladder_component
+from backend.app.db.db_queries import query_player_stats_all, query_player_stats_by_id, query_ladder_component, query_puuid_match_history
 import asyncio
 import logging
 
@@ -38,8 +38,8 @@ async def get_player_stats_db(player_puuid: str):
 @router.get("/api/player-match-history{player_puuid}")
 async def get_player_match_history_db(player_puuid: str):
     logging.info(f"START ROUTE: /api/player-match-history{player_puuid}")
-    data = await compile_match_detail_from_puuid(player_puuid=player_puuid)
-    logging.info(f"returned data sample: {data[0:1]}")
+    data = await query_puuid_match_history(player_puuid=player_puuid)
+    logging.info(f"returned data sample: {data[0:2]}")
     logging.info(f"returned data length: {len(data)}")
     logging.info(f"END ROUTE: /api/player-match-history{player_puuid}")
     return data
