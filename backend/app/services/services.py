@@ -373,13 +373,7 @@ async def _dev_clear_collection_data(collection_name="sample"):
 
 
 
-async def test_query_puuid_match_history(puuid="cQ5qRo8B2jc9xnlYr0eE0DnhuGiyWpTppU_VHPGVSRBKrT_EVEUFrZTKCofZciCG5y1rDIVZUMuFJA"):
-    logging.info(f"START SERVICE: test_query_puuid_match_history")
-    data = await query_puuid_match_history(player_puuid=puuid)
-    logging.info(f"puuid queried: {puuid}")
-    logging.info(f"data sample: {data[0:10]}")
-    logging.info(f"data length: {len(data)}")
-    logging.info(f"END SERVICE: test_query_puuid_match_history")
+
 
 
 
@@ -401,5 +395,5 @@ if __name__ == "__main__":
     # asyncio.run(_dev_clear_collection_data())
 
     # TEST SERVICES
-    asyncio.run(test_query_puuid_match_history())
+
 

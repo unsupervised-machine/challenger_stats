@@ -1,7 +1,6 @@
 // App.js
 import React from 'react';
 import TestRoute from './TestRoute';
-import PlayerStats from './PlayerStats';
 import LadderComponentSkeleton from "./LadderComponentSkeleton";
 import LadderComponent from "./LadderComponent";
 
@@ -15,7 +14,6 @@ const App = () => {
       <TestRoute />
       {/*<LadderComponentSkeleton />*/}
       <LadderComponent />
-      {/*<PlayerStats />*/}
     </div>
 
   );
