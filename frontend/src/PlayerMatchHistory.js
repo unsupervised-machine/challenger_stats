@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { getPlayerMatchHistory } from './apiService'; // API service to fetch matches
 import Match from './Match'; // Component to render individual match
+import MatchDetail from "./MatchDetail";
 
 const PlayerMatchHistory = ({ playerPuuid }) => {
   const [matches, setMatches] = useState([]);
+  const [expandedMatches, setExpandedMatches] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -29,6 +31,13 @@ const PlayerMatchHistory = ({ playerPuuid }) => {
     fetchMatchHistory();
   }, [playerPuuid]);
 
+  const expandMatch = (matchId) => {
+    setExpandedMatches((prevExpandedMatches) => ({
+      ...prevExpandedMatches,
+      [matchId]: !prevExpandedMatches[matchId], // Toggle the expanded state for the match
+    }));
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 
@@ -38,7 +47,15 @@ const PlayerMatchHistory = ({ playerPuuid }) => {
       {matches.length === 0 ? (
         <p>No match history found.</p>
       ) : (
-        matches.map((match) => <Match key={match.matchId} match={match} />)
+        matches.map((match) => (
+          <div key={match.matchId}>
+            <Match match={match} />
+            <button onClick={() => expandMatch(match.matchId)}>
+              {expandedMatches[match.matchId] ? 'Collapse' : 'Expand'}
+            </button>
+            {expandedMatches[match.matchId] && <MatchDetail match={match} />}
+          </div>
+        ))
       )}
     </div>
   );
