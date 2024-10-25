@@ -45,7 +45,7 @@ const LadderComponent = () => {
     return <div className="error">Error: {error}</div>;
   }
 
-  const backupProfileIcon = 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/profileicon/29.png'; // Replace with your default image URL
+  const backupProfileIcon = 'icons/profiles/29.png'; // Replace with your default image URL
 
   return (
     <div className="ladder-container">
@@ -57,7 +57,7 @@ const LadderComponent = () => {
         {sortedLadderData.map((player) => (
           <li key={player._id} className="ladder-item">
             <LazyLoadImage
-              src={`https://ddragon.leagueoflegends.com/cdn/12.18.1/img/profileicon/${player.player_ids_data.profileIconId}.png`}
+              src={`icons/profiles/${player.player_ids_data.profileIconId}.png`}
               alt="Player Icon"
               className="player-icon"
               effect="blur"
