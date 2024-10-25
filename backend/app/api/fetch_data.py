@@ -336,3 +336,6 @@ async def fetch_item_icons_ids():
                 print(f"Failed to download {icon_filename}: {icon_response.status_code}")
 
 
+async def fetch_summoner_spell_icons():
+    # TODO
+    pass
