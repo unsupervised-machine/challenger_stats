@@ -255,6 +255,7 @@ async def fetch_match_details(region="americas", match_id=None, api_key=API_KEY)
 
 
 async def fetch_match_details_all(region="americas", match_id_list=None, api_key=API_KEY):
+    # TODO don't fail when unable to get a single match. handle gracefully and continue to try to get more matches
     if not match_id_list:
         raise ValueError("Match ID list cannot be blank.")
 
