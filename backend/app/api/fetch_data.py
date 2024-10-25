@@ -302,7 +302,6 @@ async def fetch_item_icons_ids():
     # Download each item icon and store it in the specified directory
     for item in items:
         item_id = item.get("id")
-        item_name = item.get("name").replace(" ", "_")  # Replace spaces with underscores for filenames
 
         prefix = "/lol-game-data/assets/ASSETS/Items/Icons2D/"
         icon_path = item.get("iconPath")
@@ -337,5 +336,53 @@ async def fetch_item_icons_ids():
 
 
 async def fetch_summoner_spell_icons():
-    # TODO
-    pass
+
+    base_url = f"https://raw.communitydragon.org/latest/game/data/spells/icons2d/"
+    spells_url = f"https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/summoner-spells.json"
+
+    # Use httpx to fetch the item metadata
+    async with httpx.AsyncClient() as client:
+        response = await client.get(spells_url)
+        spells = response.json()
+
+    # Create the directory to save icons if it doesn't exist
+    project_root = Path(__file__).resolve().parent  # Get the directory of the current script
+    icons_directory = project_root / '..' / '..' / '..' / 'frontend' / 'public' / 'icons' / 'spells'  # Navigate to the desired directory
+    icons_directory.mkdir(parents=True, exist_ok=True)  # Create the directory if it doesn't exist
+
+    print(f"Icons will be saved in: {icons_directory.resolve()}")  # Print the full path of the directory
+
+    # Download each item icon and store it in the specified directory
+    for spell in spells:
+        spell_id = spell.get("id")
+
+        prefix = "/lol-game-data/assets/DATA/Spells/Icons2D/"
+        icon_path = spell.get("iconPath")
+        # Truncate icon_path
+        if icon_path.startswith(prefix):
+            icon_path = icon_path[len(prefix):]
+
+        # Construct the full URL for the icon
+        icon_url = f"{base_url}{icon_path.lstrip('/')}".lower()
+        print(icon_url)
+
+        # Define the filename for the icon
+        icon_filename = f"{spell_id}.png"  # Create a unique filename using only the item ID
+        icon_path_to_save = icons_directory / icon_filename  # Construct the full save path
+
+        # Use httpx to download the icon
+        async with httpx.AsyncClient() as client:
+            icon_response = await client.get(icon_url)
+
+            if icon_response.status_code == 200:
+                # Check if the file already exists
+                if icon_path_to_save.exists():
+                    print(f"{icon_filename} already exists. Skipping download.")
+                    continue  # Skip to the next item if the file exists
+
+                # Save the icon to the specified directory
+                with open(icon_path_to_save, 'wb') as icon_file:
+                    icon_file.write(icon_response.content)
+                print(f"Saved {icon_filename} to {icons_directory}")
+            else:
+                print(f"Failed to download {icon_filename}: {icon_response.status_code}")
