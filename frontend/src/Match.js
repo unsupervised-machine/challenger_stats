@@ -15,6 +15,7 @@ const Match = ({ match }) => {
     assists = 'N/A',
     totalMinionsKilled,
     championName,
+    championId,
     item0,
     item1,
     item2,
@@ -53,7 +54,12 @@ const Match = ({ match }) => {
       {/* Column2: Player Performance*/}
       <div style={{flex: 1}}>
         <h3>Player Performance</h3>
-        <p>Champion Name: {championName}</p>
+        {/*<p>Champion Name: {championName}</p>*/}
+        <img
+            src={championId !== -1 ? `/icons/champions/${championId}.png` : placeholderImg}
+            alt={championId !== -1 ? `Champion ${championId}` : 'Placeholder Item'}
+            style={{width: '50px', height: '50px'}}
+        />
         <p>Kills: {kills}</p>
         <p>Deaths: {deaths}</p>
         <p>Assists: {assists}</p>
