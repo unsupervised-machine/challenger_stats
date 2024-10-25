@@ -61,10 +61,20 @@ const Match = ({ match }) => {
       </div>
 
       {/* Column3: Summoner information */}
-      <div style={{ flex: 1 }}>
+      <div style={{flex: 1}}>
         <h4>Summoner Spells</h4>
-        <p>Summoner Spell 1 ID: {summoner1Id}</p>
-        <p>Summoner Spell 2 ID: {summoner2Id}</p>
+        <img
+            src={summoner1Id !== 0 ? `/icons/spells/${summoner1Id}.png` : placeholderImg}
+            alt={summoner1Id !== 0 ? `Spell ${summoner1Id}` : 'Placeholder Item'}
+            style={{width: '50px', height: '50px'}}
+        />
+        <img
+            src={summoner2Id !== 0 ? `/icons/spells/${summoner2Id}.png` : placeholderImg}
+            alt={summoner2Id !== 0 ? `Spell ${summoner2Id}` : 'Placeholder Item'}
+            style={{width: '50px', height: '50px'}}
+        />
+        {/*<p>Summoner Spell 1 ID: {summoner1Id}</p>*/}
+        {/*<p>Summoner Spell 2 ID: {summoner2Id}</p>*/}
       </div>
 
       {/* Column4: Items */}

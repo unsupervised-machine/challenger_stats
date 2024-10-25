@@ -49,9 +49,18 @@ const MatchDetail = ({ match }) => {
                 {/*<p>Item 5: {matchDetail.item5 ?? 'N/A'}</p>*/}
                 {/*<p>Item 6: {matchDetail.item6 ?? 'N/A'}</p>*/}
 
+                {/* Spacer */}
+                <div style={{display: 'inline-block', width: '30px'}}></div>
+
+
                 {/* Summoner Spells*/}
-                <p>Summoner Spell 1: {matchDetail.item3 ?? 'N/A'}</p>
-                <p>Summoner Spell 2: {matchDetail.item4 ?? 'N/A'}</p>
+                <img src={`/icons/spells/${matchDetail.summoner1Id}.png`} alt={`Spell ${matchDetail.summoner1Id}`}
+                     style={{width: '50px', height: '50px'}}/>
+                <img src={`/icons/spells/${matchDetail.summoner2Id}.png`} alt={`Spell ${matchDetail.summoner2Id}`}
+                     style={{width: '50px', height: '50px'}}/>
+
+                {/*<p>Summoner Spell 1: {matchDetail.summoner1Id ?? 'N/A'}</p>*/}
+                {/*<p>Summoner Spell 2: {matchDetail.summoner2Id ?? 'N/A'}</p>*/}
 
                 {/* Performance */}
                 <p>Kills : {matchDetail.kills ?? 'N/A'}</p>
