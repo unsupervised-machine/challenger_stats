@@ -1,16 +1,20 @@
+// PlayerMatchHistory.js
+
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom'; // Import useParams
 import { getPlayerMatchHistory } from './apiService'; // API service to fetch matches
 import Match from './Match'; // Component to render individual match
 import MatchDetail from "./MatchDetail";
 
-const PlayerMatchHistory = ({ playerPuuid }) => {
+const PlayerMatchHistory = () => {
+  const { puuid } = useParams(); // Retrieve puuid from the URL
   const [matches, setMatches] = useState([]);
   const [expandedMatches, setExpandedMatches] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!playerPuuid) {
+    if (!puuid) {
       setError('Invalid player identifier.');
       setLoading(false);
       return;
@@ -18,7 +22,7 @@ const PlayerMatchHistory = ({ playerPuuid }) => {
 
     const fetchMatchHistory = async () => {
       try {
-        const data = await getPlayerMatchHistory(playerPuuid);
+        const data = await getPlayerMatchHistory(puuid);
         setMatches(data);
       } catch (error) {
         console.error('Error fetching match history:', error); // Log the error for debugging
@@ -29,7 +33,7 @@ const PlayerMatchHistory = ({ playerPuuid }) => {
     };
 
     fetchMatchHistory();
-  }, [playerPuuid]);
+  }, [puuid]);
 
   const expandMatch = (matchId) => {
     setExpandedMatches((prevExpandedMatches) => ({
@@ -42,22 +46,23 @@ const PlayerMatchHistory = ({ playerPuuid }) => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div>
-      <h2>Match History for Player: {playerPuuid}</h2>
-      {matches.length === 0 ? (
-        <p>No match history found.</p>
-      ) : (
-        matches.map((match) => (
-          <div key={match.matchId}>
-            <Match match={match} />
-            <button onClick={() => expandMatch(match.matchId)}>
-              {expandedMatches[match.matchId] ? 'Collapse' : 'Expand'}
-            </button>
-            {expandedMatches[match.matchId] && <MatchDetail match={match} />}
-          </div>
-        ))
-      )}
-    </div>
+      <div>
+        <h2>Match History</h2>
+        {/*<h2>Match History for Player: {puuid}</h2>*/}
+        {matches.length === 0 ? (
+            <p>No match history found.</p>
+        ) : (
+            matches.map((match) => (
+                <div key={match.matchId}>
+                  <Match match={match}/>
+                  <button onClick={() => expandMatch(match.matchId)}>
+                    {expandedMatches[match.matchId] ? 'Collapse' : 'Expand'}
+                  </button>
+                  {expandedMatches[match.matchId] && <MatchDetail match={match}/>}
+                </div>
+            ))
+        )}
+      </div>
   );
 };
 

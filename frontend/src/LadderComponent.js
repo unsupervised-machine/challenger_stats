@@ -1,4 +1,6 @@
+// LadderComponent.js
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import './LadderComponent.css'; // Import CSS for styling
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
@@ -7,6 +9,7 @@ const LadderComponent = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sortOrder, setSortOrder] = useState('desc');
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     const fetchLadderData = async () => {
@@ -57,24 +60,41 @@ const LadderComponent = () => {
         {sortedLadderData.map((player) => (
           <li key={player._id} className="ladder-item">
             <LazyLoadImage
-              src={`icons/profiles/${player.player_ids_data.profileIconId}.png`}
-              alt="Player Icon"
-              className="player-icon"
-              effect="blur"
-              onError={(e) => {
-                e.target.src = backupProfileIcon; // Use default image if there's an error loading the icon
-              }}
+                src={`icons/profiles/${player.player_ids_data.profileIconId}.png`}
+                alt="Player Icon"
+                className="player-icon"
+                effect="blur"
+                onError={(e) => {
+                  e.target.src = backupProfileIcon;
+                }}
             />
             <div className="player-info">
               <strong>Player Name:</strong> {player.player_ids_data.gameName}#{player.player_ids_data.tagLine}
-              <br />
+              <br/>
               <strong>Tier:</strong> {player.tier}
-              <br />
+              <br/>
               <strong>League Points:</strong> {player.leaguePoints}
-              <br />
+              <br/>
+              {/*<strong>Player Puuid:</strong> {player.player_ids_data.puuid}*/}
+              <br/>
               <strong>Win Rate:</strong> {player.player_summarized_stats_data?.average_win_rate
                 ? (player.player_summarized_stats_data.average_win_rate * 100).toFixed(2) + '%'
                 : 'N/A'}
+              <br/>
+              <button
+                  onClick={() => {
+                    const puuid = player.player_ids_data.puuid; // Ensure puuid is retrieved correctly
+                    console.log(`Navigating to player with puuid: ${puuid}`);
+                    if (puuid) {
+                      navigate(`/player/${puuid}`); // Navigate using puuid
+                    } else {
+                      console.error('puuid is undefined');
+                    }
+                  }}
+                  className="profile-button"
+              >
+                View Profile
+              </button>
             </div>
           </li>
         ))}

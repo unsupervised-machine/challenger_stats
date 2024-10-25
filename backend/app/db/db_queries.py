@@ -352,6 +352,7 @@ async def query_ladder_component(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, col
         "leaguePoints": 1,
         "player_summarized_stats_data.average_win_rate": 1,
         "player_ids_data.profileIconId": 1,
+        "player_ids_data.puuid": 1,
         "player_ids_data.gameName": 1,
         "player_ids_data.tagLine": 1
     }

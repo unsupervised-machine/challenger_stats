@@ -1,5 +1,6 @@
 // App.js
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import TestRoute from './TestRoute';
 import TestRoute3 from './TestRoute3';
 import LadderComponentSkeleton from "./LadderComponentSkeleton";
@@ -11,16 +12,11 @@ import PlayerMatchHistory from "./PlayerMatchHistory";
 // to ensure port is not being used: npx kill-port 3000
 
 const App = () => {
-  const playerPuuid = 'cQ5qRo8B2jc9xnlYr0eE0DnhuGiyWpTppU_VHPGVSRBKrT_EVEUFrZTKCofZciCG5y1rDIVZUMuFJA';
   return (
-    <div>
-      <TestRoute />
-      {/*<TestRoute3 />*/}
-      {/*<LadderComponentSkeleton />*/}
-      <LadderComponent />
-      {/*<PlayerMatchHistory playerPuuid={playerPuuid} />*/}
-    </div>
-
+    <Routes>
+      <Route path="/" element={<LadderComponent />} />
+      <Route path="/player/:puuid" element={<PlayerMatchHistory />} />
+    </Routes>
   );
 };
 
