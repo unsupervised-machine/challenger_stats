@@ -45,7 +45,7 @@ const LadderComponent = () => {
     return <div className="error">Error: {error}</div>;
   }
 
-  const backupProfileIcon = 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/profileicon/15.png'; // Replace with your default image URL
+  const backupProfileIcon = 'https://ddragon.leagueoflegends.com/cdn/12.18.1/img/profileicon/29.png'; // Replace with your default image URL
 
   return (
     <div className="ladder-container">

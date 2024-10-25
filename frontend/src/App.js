@@ -17,8 +17,8 @@ const App = () => {
       <TestRoute />
       {/*<TestRoute3 />*/}
       {/*<LadderComponentSkeleton />*/}
-      {/*<LadderComponent />*/}
-      <PlayerMatchHistory playerPuuid={playerPuuid} />
+      <LadderComponent />
+      {/*<PlayerMatchHistory playerPuuid={playerPuuid} />*/}
     </div>
 
   );

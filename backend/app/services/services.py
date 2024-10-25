@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 from pydantic.v1 import ValidationError
 
-from backend.app.api.fetch_data import fetch_apex_leagues, fetch_account_ids, fetch_matches_all, fetch_match_details_all, fetch_game_name_tagline, fetch_item_icons_ids, fetch_summoner_spell_icons, fetch_champion_icons
+from backend.app.api.fetch_data import fetch_apex_leagues, fetch_account_ids, fetch_matches_all, fetch_match_details_all, fetch_game_name_tagline, fetch_item_icons_ids, fetch_summoner_spell_icons, fetch_champion_icons, fetch_profile_icons
 from backend.app.db.db_actions import insert_data, clear_and_insert_data, clear_collection_data, remove_records
 from backend.app.db.db_queries import query_ladder_players, query_puuids, query_match_ids, query_processed_match_ids, query_match_detail_ids, compile_player_match_history, compile_player_summarized_stats, query_player_ids, compile_ladder
 from backend.app.api.validation import League
@@ -306,24 +306,6 @@ async def update_player_summarized_stats():
     logging.info(f"END SERVICE: update_player_summarized_stats")
 
 
-async def update_item_icons():
-    logging.info(f"START SERVICE: update_item_icons")
-    await fetch_item_icons_ids()
-    logging.info(f"END SERVICE: update_item_icons")
-
-
-async def update_summoner_spell_icons():
-    logging.info(f"START SERVICE: update_summoner_spell_icons")
-    await fetch_summoner_spell_icons()
-    logging.info(f"END SERVICE: update_summoner_spell_icons")
-
-async def update_champion_icons():
-    logging.info(f"START SERVICE: update_champion_icons")
-    await fetch_champion_icons()
-    logging.info(f"END SERVICE: update_champion_icons")
-
-
-
 async def update_ladder_data():
     logging.info(f"START SERVICE: update_ladder_data")
     ladder_data = await compile_ladder()
@@ -335,6 +317,32 @@ async def update_ladder_data():
                                                  data=ladder_data)
     logging.info(f"Inserting data end: success \n insert_id_list length: {len(insert_id_list)}")
     logging.info(f"END SERVICE: update_ladder_data")
+
+
+async def update_item_icons():
+    logging.info(f"START SERVICE: update_item_icons")
+    await fetch_item_icons_ids()
+    logging.info(f"END SERVICE: update_item_icons")
+
+
+async def update_summoner_spell_icons():
+    logging.info(f"START SERVICE: update_summoner_spell_icons")
+    await fetch_summoner_spell_icons()
+    logging.info(f"END SERVICE: update_summoner_spell_icons")
+
+
+async def update_champion_icons():
+    logging.info(f"START SERVICE: update_champion_icons")
+    await fetch_champion_icons()
+    logging.info(f"END SERVICE: update_champion_icons")
+
+
+async def update_profile_icons():
+    logging.info(f"START SERVICE: update_profile_icons")
+    await fetch_profile_icons()
+    logging.info(f"END SERVICE: update_profile_icons")
+
+
 
 
 
@@ -409,7 +417,8 @@ if __name__ == "__main__":
     # asyncio.run(update_ladder_data())
     # asyncio.run(update_item_icons())
     # asyncio.run(update_summoner_spell_icons())
-    asyncio.run(update_champion_icons())
+    # asyncio.run(update_champion_icons())
+    asyncio.run(update_profile_icons())
 
     # DEV SERVICES
     # asyncio.run(_dev_clean_unprocessed_matches())
