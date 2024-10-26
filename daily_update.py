@@ -40,4 +40,4 @@ if __name__ == "__main__":
     print("Scheduler started. Press Ctrl+C to stop.")
     while True:
         schedule.run_pending()
-        time.sleep(300)  # Sleep for a bit to prevent high CPU usage
+        time.sleep(1)  # Sleep for a bit to prevent high CPU usage

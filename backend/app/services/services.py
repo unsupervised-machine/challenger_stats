@@ -92,9 +92,10 @@ async def update_player_ids_data():
     # Transform Data
     # Create sets of summonerIds from both lists
     new_player_ids_set = {d['summonerId'] for d in new_player_ids}
-    stored_ids_set = {d['summonerId'] for d in stored_player_ids}
+    stored_ids_set = {d['id'] for d in stored_player_ids}
     # Find summonerIds unique to new_players_ids
     ids_to_fetch_and_store = new_player_ids_set - stored_ids_set
+    logging.info(f"ids that need to be stored: {ids_to_fetch_and_store}")
 
     # Fetch other ids (including puuid) along with game name and tagline
     ids_to_store = []
@@ -475,7 +476,7 @@ if __name__ == "__main__":
     import asyncio
     # STANDARD SERVICES
     # asyncio.run(update_league_data())
-    # asyncio.run(update_player_ids_data())
+    asyncio.run(update_player_ids_data())
     # asyncio.run(update_game_name_taglines())
     # asyncio.run(update_match_ids())
     # asyncio.run(update_match_detail())

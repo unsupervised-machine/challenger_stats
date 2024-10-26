@@ -1,9 +1,12 @@
 import os
+from asyncio import timeout
+
 import httpx
 from dotenv import load_dotenv
 import asyncio
 import re
 from pathlib import Path
+import logging
 
 
 # ===============================
@@ -16,6 +19,7 @@ SEASON_START_TIME_UNIX = os.getenv("SEASON_START_TIME_UNIX")
 RATE_LIMIT = float(os.getenv("RATE_LIMIT"))
 MAX_RETRIES = int(os.getenv("MAX_RETRIES"))
 INITIAL_BACKOFF = float(os.getenv("INITIAL_BACKOFF"))
+DEFAULT_TIMEOUT = int(os.getenv("DEFAULT_TIMEOUT"))
 
 
 # ===============================
@@ -44,10 +48,20 @@ async def backoff_api_call(api_func, *args, **kwargs):
                 retries += 1
                 retry_after = int(e.response.headers.get("Retry-After", backoff))
                 print(f"Rate limited. Retrying after {retry_after} seconds... ({retries}/{MAX_RETRIES})")
+                logging.warning(f"Rate limited. Retrying after {retry_after} seconds... ({retries}/{MAX_RETRIES})")
                 await asyncio.sleep(retry_after)
                 backoff *= 2  # Exponentially increase the backoff time
             else:
+                logging.error(f"HTTP error {e.response.status_code}: {e}")
                 raise  # Re-raise any other status code errors
+
+        except (httpx.RequestError, httpx.ReadTimeout) as e:
+            # Handle connection-related errors and timeouts
+            retries += 1
+            logging.warning(
+                f"Connection error occurred: {e}. Retrying in {backoff} seconds... ({retries}/{MAX_RETRIES})")
+            await asyncio.sleep(backoff)
+            backoff *= 2  # Exponentially increase the backoff time
 
     raise Exception("Max retries exceeded for API call.")
 
@@ -127,7 +141,7 @@ async def fetch_account_ids(region="na1", summoner_id=None, api_key=API_KEY):
 
     async def api_call():
         async with httpx.AsyncClient() as client:
-            response = await client.get(url)
+            response = await client.get(url, timeout=DEFAULT_TIMEOUT)
             response.raise_for_status()  # Raise an error for bad responses
             return response.json()
 
@@ -142,7 +156,7 @@ async def fetch_game_name_tagline(region="americas", puuid=None, api_key=API_KEY
 
     async def api_call():
         async with httpx.AsyncClient() as client:
-            response = await client.get(url)
+            response = await client.get(url, timeout=DEFAULT_TIMEOUT)
             response.raise_for_status()  # Raise an error for bad responses
             return response.json()
 
