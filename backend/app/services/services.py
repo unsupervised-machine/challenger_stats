@@ -416,12 +416,12 @@ if __name__ == "__main__":
     # asyncio.run(update_player_summarized_stats())
     # asyncio.run(update_ladder_data())
     # asyncio.run(update_item_icons())
-    # asyncio.run(update_summoner_spell_icons())
+    asyncio.run(update_summoner_spell_icons())
     # asyncio.run(update_champion_icons())
-    asyncio.run(update_profile_icons())
+    # asyncio.run(update_profile_icons())
 
     # DEV SERVICES
-    # asyncio.run(_dev_clean_unprocessed_matches())
+    asyncio.run(_dev_clean_unprocessed_matches())
     # asyncio.run(_dev_clear_collection_data())
 
     # TEST SERVICES

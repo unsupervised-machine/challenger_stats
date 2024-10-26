@@ -16,6 +16,7 @@ python-dotenv = "^1.0.1"
 pymongo = "4.9.0"
 uvicorn = "^0.32.0"
 motor = "^3.6.0"
+schedule = "^1.2.2"
 
 
 [build-system]
