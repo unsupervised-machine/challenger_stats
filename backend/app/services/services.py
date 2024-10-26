@@ -45,6 +45,10 @@ logging.basicConfig(
 # Fetch Data
 async def update_league_data():
     logging.info(f"START SERVICE: update_league_data")
+
+    # Start the timer
+    start_time = time.time()
+
     # Fetch Data
     logging.info(f"Fetching data start: master league from NA")
     ladder_data = await fetch_apex_leagues()
@@ -63,10 +67,18 @@ async def update_league_data():
         logging.info(f"Inserting data end: success \n insert_id: {insert_id}")
 
     logging.info(f"END SERVICE: update_league_data")
+    # End the timer
+    end_time = time.time()
+    total_time = end_time - start_time
+    logging.info(f"Total time taken: {total_time:.2f} seconds")
 
 
 async def update_player_ids_data():
     logging.info(f"START SERVICE: update_player_ids_data")
+
+    # Start the timer
+    start_time = time.time()
+
     # Fetch players from ladder (only id is summonerId)
     logging.info(f"Fetching data start: \n get recent_player data from db query")
     new_player_ids = await query_ladder_players()
@@ -108,6 +120,11 @@ async def update_player_ids_data():
         logging.info(f"Inserting data end: success \n insert_id length: {len(insert_id)}")
 
     logging.info(f"END SERVICE: update_player_ids_data")
+
+    # End the timer
+    end_time = time.time()
+    total_time = end_time - start_time
+    logging.info(f"Total time taken: {total_time:.2f} seconds")
 
 
 async def update_match_ids():
@@ -166,6 +183,7 @@ async def update_match_ids():
     # if the table are already populated this should take a matter of minutes
 async def update_match_detail():
     logging.info(f"START SERVICE: update_match_detail")
+
     # Capture the start time
     start_time = time.time()
 
@@ -224,20 +242,18 @@ async def update_match_detail():
                                           data=match_ids_to_process_list)
         logging.info(f"Inserting data end: success \n insert_id_list length: {len(insert_id_list)}")
 
-    # Capture the end time
+
+    logging.info(f"END SERVICE: update_match_detail")
     end_time = time.time()
-
-    # Calculate the time difference
-    time_difference = end_time - start_time
-
-    # Format time differnce as hours minutes seconds
-    formatted_duration = str(timedelta(seconds=time_difference))
-
-    logging.info(f"END SERVICE: update_match_detail | Duration: {time_difference:.2f} seconds")
+    total_time = end_time - start_time
+    logging.info(f"Total time taken: {total_time:.2f} seconds")
 
 
 async def update_player_match_history():
     logging.info(f"START SERVICE: update_player_match_history")
+
+    # Capture the start time
+    start_time = time.time()
 
     # Fetch list of all players from db query
     logging.info(f"Fetching data start: \n Get puuids data from db query")
@@ -271,9 +287,16 @@ async def update_player_match_history():
 
     logging.info(f"END SERVICE: update_player_matches_stats")
 
+    end_time = time.time()
+    total_time = end_time - start_time
+    logging.info(f"Total time taken: {total_time:.2f} seconds")
+
 
 async def update_player_summarized_stats():
     logging.info(f"START SERVICE: update_player_summarized_stats")
+
+    # Capture the start time
+    start_time = time.time()
 
     # Fetch list of all players from db
     logging.info(f"Fetching data start: \n Get puuids data from db query")
@@ -305,9 +328,17 @@ async def update_player_summarized_stats():
 
     logging.info(f"END SERVICE: update_player_summarized_stats")
 
+    end_time = time.time()
+    total_time = end_time - start_time
+    logging.info(f"Total time taken: {total_time:.2f} seconds")
+
 
 async def update_ladder_data():
     logging.info(f"START SERVICE: update_ladder_data")
+
+    # Capture the start time
+    start_time = time.time()
+
     ladder_data = await compile_ladder()
     logging.info(f"ladder_data sample: {ladder_data[0:10]}")
     logging.info(f"ladder_data length: {len(ladder_data)}")
@@ -318,29 +349,65 @@ async def update_ladder_data():
     logging.info(f"Inserting data end: success \n insert_id_list length: {len(insert_id_list)}")
     logging.info(f"END SERVICE: update_ladder_data")
 
+    end_time = time.time()
+    total_time = end_time - start_time
+    logging.info(f"Total time taken: {total_time:.2f} seconds")
 
 async def update_item_icons():
     logging.info(f"START SERVICE: update_item_icons")
+
+    # Capture the start time
+    start_time = time.time()
+
     await fetch_item_icons_ids()
     logging.info(f"END SERVICE: update_item_icons")
+
+    end_time = time.time()
+    total_time = end_time - start_time
+    logging.info(f"Total time taken: {total_time:.2f} seconds")
 
 
 async def update_summoner_spell_icons():
     logging.info(f"START SERVICE: update_summoner_spell_icons")
+
+    # Capture the start time
+    start_time = time.time()
+
     await fetch_summoner_spell_icons()
     logging.info(f"END SERVICE: update_summoner_spell_icons")
+
+    end_time = time.time()
+    total_time = end_time - start_time
+    logging.info(f"Total time taken: {total_time:.2f} seconds")
 
 
 async def update_champion_icons():
     logging.info(f"START SERVICE: update_champion_icons")
+
+    # Capture the start time
+    start_time = time.time()
+
     await fetch_champion_icons()
     logging.info(f"END SERVICE: update_champion_icons")
+
+    end_time = time.time()
+    total_time = end_time - start_time
+    logging.info(f"Total time taken: {total_time:.2f} seconds")
+
 
 
 async def update_profile_icons():
     logging.info(f"START SERVICE: update_profile_icons")
+
+    # Capture the start time
+    start_time = time.time()
+
     await fetch_profile_icons()
     logging.info(f"END SERVICE: update_profile_icons")
+
+    end_time = time.time()
+    total_time = end_time - start_time
+    logging.info(f"Total time taken: {total_time:.2f} seconds")
 
 
 
@@ -416,14 +483,17 @@ if __name__ == "__main__":
     # asyncio.run(update_player_summarized_stats())
     # asyncio.run(update_ladder_data())
     # asyncio.run(update_item_icons())
-    asyncio.run(update_summoner_spell_icons())
+    # asyncio.run(update_summoner_spell_icons())
     # asyncio.run(update_champion_icons())
     # asyncio.run(update_profile_icons())
 
     # DEV SERVICES
-    asyncio.run(_dev_clean_unprocessed_matches())
+    # asyncio.run(_dev_clean_unprocessed_matches())
     # asyncio.run(_dev_clear_collection_data())
 
     # TEST SERVICES
+
+    # Placeholder Pass
+    pass
 
 
