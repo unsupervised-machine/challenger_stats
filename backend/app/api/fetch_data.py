@@ -263,7 +263,7 @@ async def fetch_match_details(region="americas", match_id=None, api_key=API_KEY)
 
     url = f"https://{region}.api.riotgames.com/lol/match/v5/matches/{match_id}?api_key={api_key}"
     async with httpx.AsyncClient() as client:
-        response = await client.get(url)
+        response = await client.get(url, timeout=DEFAULT_TIMEOUT)
         response.raise_for_status()
         return response.json()
 

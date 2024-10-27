@@ -114,11 +114,15 @@ async def update_player_ids_data():
     logging.info(f"Validating data end: \n success")
 
     # Insert Data
-    logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: player_ids")
-    logging.info(f"Sample of data trying to insert: {ids_to_store[0:10]}")
-    if validation_check:
-        insert_id = await insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_ids', data=ids_to_store)
-        logging.info(f"Inserting data end: success \n insert_id length: {len(insert_id)}")
+    if ids_to_store:
+        logging.info(f"Inserting data start: \n database: {MONGO_DB_NAME}, collection: player_ids")
+        logging.info(f"Sample of data trying to insert: {ids_to_store[0:10]}")
+        if validation_check:
+            insert_id = await insert_data(db_uri=MONGO_DB_URI, db_name=MONGO_DB_NAME, collection_name='player_ids',
+                                          data=ids_to_store)
+            logging.info(f"Inserting data end: success \n insert_id length: {len(insert_id)}")
+    else:
+        logging.info(f"No new ids to insert.")
 
     logging.info(f"END SERVICE: update_player_ids_data")
 
@@ -129,7 +133,7 @@ async def update_player_ids_data():
 
 
 async def update_match_ids():
-    logging.info(f"START SERVICE: update_match_ids_data")
+    logging.info(f"START SERVICE: update_match_ids")
 
     # Start the timer
     start_time = time.time()
@@ -476,9 +480,8 @@ if __name__ == "__main__":
     import asyncio
     # STANDARD SERVICES
     # asyncio.run(update_league_data())
-    asyncio.run(update_player_ids_data())
-    # asyncio.run(update_game_name_taglines())
-    # asyncio.run(update_match_ids())
+    # asyncio.run(update_player_ids_data())
+    asyncio.run(update_match_ids())
     # asyncio.run(update_match_detail())
     # asyncio.run(update_player_match_history())
     # asyncio.run(update_player_summarized_stats())
