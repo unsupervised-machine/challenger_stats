@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'; // Import useParams
 import { getPlayerMatchHistory } from './apiService'; // API service to fetch matches
 import Match from './Match'; // Component to render individual match
 import MatchDetail from "./MatchDetail";
+import "./PlayerMatchHistory.css"
 
 const PlayerMatchHistory = () => {
   const { puuid } = useParams(); // Retrieve puuid from the URL
@@ -46,23 +47,29 @@ const PlayerMatchHistory = () => {
   if (error) return <div>{error}</div>;
 
   return (
-      <div>
+      <div className="match-history-container">
         <h2>Match History</h2>
-        {/*<h2>Match History for Player: {puuid}</h2>*/}
         {matches.length === 0 ? (
-            <p>No match history found.</p>
+            <p className="no-history">No match history found.</p>
         ) : (
             matches.map((match) => (
-                <div key={match.matchId}>
-                  <Match match={match}/>
-                  <button onClick={() => expandMatch(match.matchId)}>
-                    {expandedMatches[match.matchId] ? 'Collapse' : 'Expand'}
-                  </button>
-                  {expandedMatches[match.matchId] && <MatchDetail match={match}/>}
+                <div key={match.matchId} className="match-item">
+                  <div className="match-summary">
+                    <Match match={match}/>
+                    <button onClick={() => expandMatch(match.matchId)}>
+                      {expandedMatches[match.matchId] ? 'Collapse' : 'Expand'}
+                    </button>
+                  </div>
+                  {expandedMatches[match.matchId] && (
+                      <div className="match-detail">
+                        <MatchDetail match={match}/>
+                      </div>
+                  )}
                 </div>
             ))
         )}
       </div>
+
   );
 };
 

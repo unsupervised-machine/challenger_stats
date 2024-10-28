@@ -1,0 +1,62 @@
+/* PlayerMatchHistory.css */
+
+.match-history-container {
+  background-color: #1e1e2e;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 700px;
+  margin: 0 auto;
+  color: #ffffff;
+}
+
+h2 {
+  text-align: center;
+  color: #cccccc;
+}
+
+.match-item {
+  background-color: #282843;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.match-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+button {
+  background-color: #3b3b5b;
+  border: none;
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #4d4d72;
+}
+
+.match-detail {
+  background-color: #1e1e2e;
+  border-top: 1px solid #3a3a5c;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 0 0 8px 8px;
+}
+
+.loading, .error, .no-history {
+  text-align: center;
+  color: #ff6666;
+  font-size: 16px;
+}
+
+.match-id {
+  font-size: 0.9em;
+  color: #a8a8d0;
+}
